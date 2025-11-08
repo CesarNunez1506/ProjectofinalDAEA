@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Proyecto JetBarins\\Proyecto Final Desarrollo\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj": {}
+    "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj": {}
   },
   "projects": {
-    "D:\\Proyecto JetBarins\\Proyecto Final Desarrollo\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj": {
+    "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Proyecto JetBarins\\Proyecto Final Desarrollo\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
         "projectName": "Proyecto Final",
-        "projectPath": "D:\\Proyecto JetBarins\\Proyecto Final Desarrollo\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
-        "packagesPath": "C:\\Users\\jhost\\.nuget\\packages\\",
-        "outputPath": "D:\\Proyecto JetBarins\\Proyecto Final Desarrollo\\ProjectofinalDAEA\\Proyecto Final\\obj\\",
+        "projectPath": "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
+        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\jhost\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -68,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\jhost\\.dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.111/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
