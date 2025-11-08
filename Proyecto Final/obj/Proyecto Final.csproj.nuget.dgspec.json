@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj": {}
+    "D:\\TECSUP\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj": {}
   },
   "projects": {
-    "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj": {
+    "D:\\TECSUP\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
+        "projectUniqueName": "D:\\TECSUP\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
         "projectName": "Proyecto Final",
-        "projectPath": "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\RiderProjects\\ProjectofinalDAEA\\Proyecto Final\\obj\\",
+        "projectPath": "D:\\TECSUP\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
+        "packagesPath": "C:\\Users\\jcadi\\.nuget\\packages\\",
+        "outputPath": "D:\\TECSUP\\ProjectofinalDAEA\\Proyecto Final\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\jcadi\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -68,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.111/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
