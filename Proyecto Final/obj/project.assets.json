@@ -75,19 +75,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Cesar\\.nuget\\packages\\": {}
+    "C:\\Users\\jhost\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Cesar\\RiderProjects\\Proyecto Final\\Proyecto Final\\Proyecto Final.csproj",
+      "projectUniqueName": "D:\\Proyecto JetBarins\\Proyecto Final Desarrollo\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
       "projectName": "Proyecto Final",
-      "projectPath": "C:\\Users\\Cesar\\RiderProjects\\Proyecto Final\\Proyecto Final\\Proyecto Final.csproj",
-      "packagesPath": "C:\\Users\\Cesar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Cesar\\RiderProjects\\Proyecto Final\\Proyecto Final\\obj\\",
+      "projectPath": "D:\\Proyecto JetBarins\\Proyecto Final Desarrollo\\ProjectofinalDAEA\\Proyecto Final\\Proyecto Final.csproj",
+      "packagesPath": "C:\\Users\\jhost\\.nuget\\packages\\",
+      "outputPath": "D:\\Proyecto JetBarins\\Proyecto Final Desarrollo\\ProjectofinalDAEA\\Proyecto Final\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Cesar\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\jhost\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -141,7 +141,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Users\\jhost\\.dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
