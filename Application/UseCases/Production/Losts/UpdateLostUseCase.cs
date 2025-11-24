@@ -34,9 +34,9 @@ public class UpdateLostUseCase
             lost.LostType = dto.LostType;
         }
 
-        if (dto.Description != null)
+        if (dto.Observations != null)
         {
-            lost.Description = dto.Description;
+            lost.Observations = dto.Observations;
         }
 
         lost.UpdatedAt = DateTime.UtcNow;
@@ -49,7 +49,7 @@ public class UpdateLostUseCase
             ProductionId = updated.ProductionId,
             Quantity = updated.Quantity,
             LostType = updated.LostType,
-            Description = updated.Description,
+            Observations = updated.Observations,
             CreatedAt = updated.CreatedAt,
             UpdatedAt = updated.UpdatedAt
         };

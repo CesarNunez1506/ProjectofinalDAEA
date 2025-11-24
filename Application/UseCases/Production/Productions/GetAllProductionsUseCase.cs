@@ -23,8 +23,8 @@ public class GetAllProductionsUseCase
         {
             Id = p.Id,
             ProductId = p.ProductId,
-            Quantity = p.Quantity,
-            Date = p.Date,
+            QuantityProduced = p.QuantityProduced,
+            ProductionDate = p.ProductionDate,
             IsActive = p.IsActive,
             CreatedAt = p.CreatedAt,
             UpdatedAt = p.UpdatedAt,

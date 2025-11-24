@@ -25,15 +25,15 @@ public class GetAllLostsUseCase
             ProductionId = l.ProductionId,
             Quantity = l.Quantity,
             LostType = l.LostType,
-            Description = l.Description,
+            Observations = l.Observations,
             CreatedAt = l.CreatedAt,
             UpdatedAt = l.UpdatedAt,
             Production = l.Production != null ? new ProductionDto
             {
                 Id = l.Production.Id,
                 ProductId = l.Production.ProductId,
-                Quantity = l.Production.Quantity,
-                Date = l.Production.Date,
+                QuantityProduced = l.Production.QuantityProduced,
+                ProductionDate = l.Production.ProductionDate,
                 IsActive = l.Production.IsActive,
                 Product = l.Production.Product != null ? new ProductDto
                 {

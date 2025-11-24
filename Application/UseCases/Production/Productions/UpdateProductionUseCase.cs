@@ -25,14 +25,14 @@ public class UpdateProductionUseCase
         }
 
         // Actualizar solo los campos permitidos
-        if (dto.Quantity.HasValue)
+        if (dto.QuantityProduced.HasValue)
         {
-            production.Quantity = dto.Quantity.Value;
+            production.QuantityProduced = dto.QuantityProduced.Value;
         }
 
-        if (dto.Date.HasValue)
+        if (dto.ProductionDate.HasValue)
         {
-            production.Date = dto.Date.Value;
+            production.ProductionDate = dto.ProductionDate.Value;
         }
 
         production.UpdatedAt = DateTime.UtcNow;
@@ -43,8 +43,8 @@ public class UpdateProductionUseCase
         {
             Id = updated.Id,
             ProductId = updated.ProductId,
-            Quantity = updated.Quantity,
-            Date = updated.Date,
+            QuantityProduced = updated.QuantityProduced,
+            ProductionDate = updated.ProductionDate,
             IsActive = updated.IsActive,
             CreatedAt = updated.CreatedAt,
             UpdatedAt = updated.UpdatedAt

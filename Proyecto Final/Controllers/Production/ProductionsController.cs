@@ -2,7 +2,7 @@ using Application.DTOs.Production;
 using Application.UseCases.Production.Productions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Proyecto_Final.Controllers.Production;
+namespace Proyecto_Final.Controllers.ProductionModule;
 
 /// <summary>
 /// Controlador para la gestión de producciones
@@ -96,7 +96,7 @@ public class ProductionsController : ControllerBase
                 return BadRequest(ModelState);
 
             var response = await _createProductionUseCase.ExecuteAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = response.Production.Id }, response);
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
         catch (KeyNotFoundException ex)
         {

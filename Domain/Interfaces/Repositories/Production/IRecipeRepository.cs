@@ -19,6 +19,11 @@ public interface IRecipeRepository
     Task<Recipe?> GetByIdAsync(Guid id);
     
     /// <summary>
+    /// Obtiene una receta por su ID con relaciones (Product, Resource)
+    /// </summary>
+    Task<Recipe?> GetByIdWithRelationsAsync(Guid id);
+    
+    /// <summary>
     /// Obtiene todas las recetas de un producto específico con los recursos relacionados
     /// </summary>
     Task<IEnumerable<Recipe>> GetByProductIdAsync(Guid productId);

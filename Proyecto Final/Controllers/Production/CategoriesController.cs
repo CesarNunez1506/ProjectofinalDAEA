@@ -2,7 +2,7 @@ using Application.DTOs.Production;
 using Application.UseCases.Production.Categories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Proyecto_Final.Controllers.Production;
+namespace Proyecto_Final.Controllers.ProductionModule;
 
 /// <summary>
 /// Controlador para gestión de categorías de productos

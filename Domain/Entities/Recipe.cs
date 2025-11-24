@@ -13,6 +13,8 @@ public partial class Recipe
 
     public double Quantity { get; set; }
 
+    public string Unit { get; set; } = null!;
+
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }

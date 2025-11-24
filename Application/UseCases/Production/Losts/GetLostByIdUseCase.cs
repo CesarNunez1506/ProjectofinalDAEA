@@ -28,15 +28,15 @@ public class GetLostByIdUseCase
             ProductionId = lost.ProductionId,
             Quantity = lost.Quantity,
             LostType = lost.LostType,
-            Description = lost.Description,
+            Observations = lost.Observations,
             CreatedAt = lost.CreatedAt,
             UpdatedAt = lost.UpdatedAt,
             Production = lost.Production != null ? new ProductionDto
             {
                 Id = lost.Production.Id,
                 ProductId = lost.Production.ProductId,
-                Quantity = lost.Production.Quantity,
-                Date = lost.Production.Date,
+                QuantityProduced = lost.Production.QuantityProduced,
+                ProductionDate = lost.Production.ProductionDate,
                 IsActive = lost.Production.IsActive,
                 Product = lost.Production.Product != null ? new ProductDto
                 {

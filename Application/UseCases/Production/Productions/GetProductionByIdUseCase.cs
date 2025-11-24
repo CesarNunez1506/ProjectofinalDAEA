@@ -26,8 +26,8 @@ public class GetProductionByIdUseCase
         {
             Id = production.Id,
             ProductId = production.ProductId,
-            Quantity = production.Quantity,
-            Date = production.Date,
+            QuantityProduced = production.QuantityProduced,
+            ProductionDate = production.ProductionDate,
             IsActive = production.IsActive,
             CreatedAt = production.CreatedAt,
             UpdatedAt = production.UpdatedAt,

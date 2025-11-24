@@ -1,11 +1,14 @@
 using Domain.Interfaces.Repositories.Production;
+using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services.Production;
+using Domain.Interfaces.Services;
 using Infrastructure.Repositories.Production;
+using Infrastructure.Repositories;
 using Infrastructure.Services.Production;
+using Infrastructure.Services;
 using Application.UseCases.Production.Categories;
 using Application.UseCases.Production.Products;
 using Application.UseCases.Production.Recipes;
-using Application.UseCases.Production.PlantProductions;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
 using Infrastructure.Data;
@@ -52,10 +55,12 @@ builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IPlantProductionRepository, PlantProductionRepository>();
 builder.Services.AddScoped<IProductionRepository, ProductionRepository>();
 builder.Services.AddScoped<ILostRepository, LostRepository>();
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 
 // ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
 builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // ========== CASOS DE USO - CATEGORÍAS ==========
 builder.Services.AddScoped<CreateCategoryUseCase>();
@@ -77,13 +82,6 @@ builder.Services.AddScoped<GetAllRecipesUseCase>();
 builder.Services.AddScoped<GetRecipesByProductIdUseCase>();
 builder.Services.AddScoped<UpdateRecipeUseCase>();
 builder.Services.AddScoped<DeleteRecipeUseCase>();
-
-// ========== CASOS DE USO - PLANTAS DE PRODUCCIÓN ==========
-builder.Services.AddScoped<CreatePlantProductionUseCase>();
-builder.Services.AddScoped<GetAllPlantProductionsUseCase>();
-builder.Services.AddScoped<GetPlantProductionByIdUseCase>();
-builder.Services.AddScoped<UpdatePlantProductionUseCase>();
-builder.Services.AddScoped<DeletePlantProductionUseCase>();
 
 // ========== CASOS DE USO - PRODUCCIONES ==========
 builder.Services.AddScoped<CreateProductionUseCase>();

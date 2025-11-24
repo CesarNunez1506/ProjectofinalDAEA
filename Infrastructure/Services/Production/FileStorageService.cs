@@ -1,5 +1,5 @@
 using Domain.Interfaces.Services.Production;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure.Services.Production;
 
@@ -9,10 +9,10 @@ namespace Infrastructure.Services.Production;
 /// </summary>
 public class FileStorageService : IFileStorageService
 {
-    private readonly IWebHostEnvironment _environment;
+    private readonly IHostEnvironment _environment;
     private const string UPLOAD_FOLDER = "uploads";
 
-    public FileStorageService(IWebHostEnvironment environment)
+    public FileStorageService(IHostEnvironment environment)
     {
         _environment = environment;
     }
@@ -20,7 +20,7 @@ public class FileStorageService : IFileStorageService
     public async Task<string> SaveFileAsync(byte[] fileContent, string fileName, string folder)
     {
         // Crear directorio si no existe
-        var uploadPath = Path.Combine(_environment.WebRootPath, UPLOAD_FOLDER, folder);
+        var uploadPath = Path.Combine(_environment.ContentRootPath, "public", UPLOAD_FOLDER, folder);
         if (!Directory.Exists(uploadPath))
         {
             Directory.CreateDirectory(uploadPath);
@@ -43,7 +43,7 @@ public class FileStorageService : IFileStorageService
         try
         {
             // Convertir URL relativa a ruta física
-            var filePath = Path.Combine(_environment.WebRootPath, fileUrl.TrimStart('/'));
+            var filePath = Path.Combine(_environment.ContentRootPath, "public", fileUrl.TrimStart('/'));
 
             if (File.Exists(filePath))
             {
@@ -79,7 +79,7 @@ public class FileStorageService : IFileStorageService
     {
         try
         {
-            var filePath = Path.Combine(_environment.WebRootPath, fileUrl.TrimStart('/'));
+            var filePath = Path.Combine(_environment.ContentRootPath, "public", fileUrl.TrimStart('/'));
             return Task.FromResult(File.Exists(filePath));
         }
         catch

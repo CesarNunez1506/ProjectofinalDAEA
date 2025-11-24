@@ -35,7 +35,7 @@ public class CreateLostUseCase
             ProductionId = dto.ProductionId,
             Quantity = dto.Quantity,
             LostType = dto.LostType,
-            Description = dto.Description ?? string.Empty,
+            Observations = dto.Observations ?? string.Empty,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -48,7 +48,7 @@ public class CreateLostUseCase
             ProductionId = created.ProductionId,
             Quantity = created.Quantity,
             LostType = created.LostType,
-            Description = created.Description,
+            Observations = created.Observations,
             CreatedAt = created.CreatedAt,
             UpdatedAt = created.UpdatedAt
         };

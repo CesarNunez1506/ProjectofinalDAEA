@@ -33,6 +33,15 @@ public class RecipeRepository : IRecipeRepository
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 
+    public async Task<Recipe?> GetByIdWithRelationsAsync(Guid id)
+    {
+        return await _context.Recipes
+            .Include(r => r.Product)
+            .Include(r => r.Resource)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.Id == id);
+    }
+
     public async Task<IEnumerable<Recipe>> GetByProductIdAsync(Guid productId)
     {
         return await _context.Recipes

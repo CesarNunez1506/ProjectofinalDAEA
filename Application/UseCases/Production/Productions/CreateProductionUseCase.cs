@@ -2,9 +2,9 @@ using Application.DTOs.Production;
 using Domain.Entities;
 using Domain.Interfaces.Repositories.Production;
 using Domain.Interfaces.Services.Production;
-using Microsoft.EntityFrameworkCore.Storage;
+using Domain.Interfaces.Services;
+using Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
-using Infrastructure.Data;
 
 namespace Application.UseCases.Production.Productions;
 
@@ -19,7 +19,8 @@ public class CreateProductionUseCase
     private readonly IPlantProductionRepository _plantProductionRepository;
     private readonly IRecipeRepository _recipeRepository;
     private readonly IUnitConversionService _unitConversionService;
-    private readonly LocalDbContext _context;
+    private readonly IWarehouseRepository _warehouseRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateProductionUseCase> _logger;
 
     public CreateProductionUseCase(
@@ -28,7 +29,8 @@ public class CreateProductionUseCase
         IPlantProductionRepository plantProductionRepository,
         IRecipeRepository recipeRepository,
         IUnitConversionService unitConversionService,
-        LocalDbContext context,
+        IWarehouseRepository warehouseRepository,
+        IUnitOfWork unitOfWork,
         ILogger<CreateProductionUseCase> logger)
     {
         _productionRepository = productionRepository;
@@ -36,7 +38,8 @@ public class CreateProductionUseCase
         _plantProductionRepository = plantProductionRepository;
         _recipeRepository = recipeRepository;
         _unitConversionService = unitConversionService;
-        _context = context;
+        _warehouseRepository = warehouseRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
@@ -46,7 +49,7 @@ public class CreateProductionUseCase
             dto.ProductId, dto.QuantityProduced);
 
         // Iniciar transacción
-        using var transaction = await _context.Database.BeginTransactionAsync();
+        await _unitOfWork.BeginTransactionAsync();
 
         try
         {
@@ -119,13 +122,13 @@ public class CreateProductionUseCase
                 UpdatedAt = DateTime.UtcNow
             };
 
-            _context.WarehouseMovementProducts.Add(warehouseMovement);
-            await _context.SaveChangesAsync();
+            await _warehouseRepository.AddWarehouseMovementProductAsync(warehouseMovement);
+            await _warehouseRepository.SaveChangesAsync();
             _logger.LogInformation("✅ Movimiento de producto creado exitosamente");
 
             // 7. Actualizar o crear inventario de producto en almacén
-            var warehouseProduct = await _context.WarehouseProducts
-                .FirstOrDefaultAsync(wp => wp.WarehouseId == plant.WarehouseId && wp.ProductId == dto.ProductId);
+            var warehouseProduct = await _warehouseRepository.GetWarehouseProductAsync(
+                dto.ProductId, plant.WarehouseId);
 
             if (warehouseProduct == null)
             {
@@ -140,18 +143,19 @@ public class CreateProductionUseCase
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 };
-                _context.WarehouseProducts.Add(warehouseProduct);
+                await _warehouseRepository.AddWarehouseProductAsync(warehouseProduct);
             }
             else
             {
                 warehouseProduct.Quantity += dto.QuantityProduced;
                 warehouseProduct.UpdatedAt = DateTime.UtcNow;
+                await _warehouseRepository.UpdateWarehouseProductAsync(warehouseProduct);
             }
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             // 8. Confirmar transacción
-            await transaction.CommitAsync();
+            await _unitOfWork.CommitTransactionAsync();
             _logger.LogInformation("✅ Transacción completada exitosamente");
 
             // 9. Retornar respuesta detallada
@@ -170,13 +174,13 @@ public class CreateProductionUseCase
                     ProductId = warehouseProduct.ProductId,
                     WarehouseId = warehouseProduct.WarehouseId,
                     Quantity = warehouseProduct.Quantity,
-                    EntryDate = warehouseProduct.EntryDate ?? DateTime.UtcNow
+                    EntryDate = warehouseProduct.EntryDate
                 }
             };
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
+            await _unitOfWork.RollbackTransactionAsync();
             _logger.LogError(ex, "❌ Error creando producción, transacción revertida");
             throw;
         }
@@ -200,10 +204,8 @@ public class CreateProductionUseCase
             totalRequiredInRecipeUnit, recipeUnit);
 
         // Obtener compras de recursos ordenadas por fecha (FIFO)
-        var buysResources = await _context.WarehouseResources
-            .Where(wr => wr.ResourceId == resourceId && wr.Status == true)
-            .OrderBy(wr => wr.EntryDate)
-            .ToListAsync();
+        var buysResources = await _warehouseRepository.GetWarehouseResourcesByResourceIdAsync(
+            resourceId, warehouseId);
 
         _logger.LogInformation("📦 Registros de compra encontrados: {Count}", buysResources.Count);
 
@@ -262,6 +264,7 @@ public class CreateProductionUseCase
                     
                     buy.Quantity -= quantityToDeduct.Value;
                     buy.UpdatedAt = DateTime.UtcNow;
+                    await _warehouseRepository.UpdateWarehouseResourceAsync(buy);
                     remainingRequired = 0;
                 }
             }
@@ -274,6 +277,7 @@ public class CreateProductionUseCase
                 remainingRequired -= convertedQuantity;
                 buy.Quantity = 0;
                 buy.UpdatedAt = DateTime.UtcNow;
+                await _warehouseRepository.UpdateWarehouseResourceAsync(buy);
             }
         }
 
@@ -291,14 +295,15 @@ public class CreateProductionUseCase
                 
                 lastBuy.Quantity -= quantityToDeduct.Value;
                 lastBuy.UpdatedAt = DateTime.UtcNow;
+                await _warehouseRepository.UpdateWarehouseResourceAsync(lastBuy);
                 remainingRequired = 0;
             }
         }
 
-        await _context.SaveChangesAsync();
+        await _warehouseRepository.SaveChangesAsync();
 
         // Crear movimiento de salida de recurso
-        var resource = await _context.Resources.FindAsync(resourceId);
+        var resource = await _warehouseRepository.GetResourceByIdAsync(resourceId);
         var resourceName = resource?.Name ?? "Recurso desconocido";
 
         var resourceMovement = new WarehouseMovementResource
@@ -307,7 +312,7 @@ public class CreateProductionUseCase
             WarehouseId = warehouseId,
             ResourceId = resourceId,
             MovementType = "salida",
-            Quantity = totalRequiredInRecipeUnit,
+            Quantity = (int)Math.Round(totalRequiredInRecipeUnit),
             MovementDate = DateTime.UtcNow,
             Observations = $"Consumo de recurso \"{resourceName}\" para producción",
             Status = true,
@@ -315,8 +320,8 @@ public class CreateProductionUseCase
             UpdatedAt = DateTime.UtcNow
         };
 
-        _context.WarehouseMovementResources.Add(resourceMovement);
-        await _context.SaveChangesAsync();
+        await _warehouseRepository.AddWarehouseMovementResourceAsync(resourceMovement);
+        await _warehouseRepository.SaveChangesAsync();
 
         _logger.LogInformation("✅ Recurso {ResourceId} procesado exitosamente", resourceId);
     }

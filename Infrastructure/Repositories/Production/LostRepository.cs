@@ -17,6 +17,14 @@ public class LostRepository : ILostRepository
         _context = context;
     }
 
+    public async Task<IEnumerable<Lost>> GetAllAsync()
+    {
+        return await _context.Losts
+            .AsNoTracking()
+            .OrderByDescending(l => l.CreatedAt)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<Lost>> GetAllWithProductionAsync()
     {
         return await _context.Losts

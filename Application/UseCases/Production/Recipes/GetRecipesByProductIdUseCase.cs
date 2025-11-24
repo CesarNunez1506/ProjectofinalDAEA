@@ -39,12 +39,11 @@ public class GetRecipesByProductIdUseCase
                 Status = r.Product.Status,
                 Producible = r.Product.Producible
             } : null,
-            Resource = r.Resource != null ? new PlantProductionDto
+            Resource = r.Resource != null ? new ResourceDto
             {
                 Id = r.Resource.Id,
                 Name = r.Resource.Name,
-                Unit = r.Resource.Unit,
-                Quantity = r.Resource.Quantity,
+                Observation = r.Resource.Observation,
                 Status = r.Resource.Status
             } : null
         });

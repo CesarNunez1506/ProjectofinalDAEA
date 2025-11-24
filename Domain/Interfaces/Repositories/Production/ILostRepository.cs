@@ -9,7 +9,12 @@ namespace Domain.Interfaces.Repositories.Production;
 public interface ILostRepository
 {
     /// <summary>
-    /// Obtiene todos los registros de pérdidas con producción relacionada
+    /// Obtiene todos los registros de pérdidas
+    /// </summary>
+    Task<IEnumerable<Lost>> GetAllAsync();
+    
+    /// <summary>
+    /// Obtiene todos los registros de pérdidas con relaciones
     /// </summary>
     Task<IEnumerable<Lost>> GetAllWithProductionAsync();
     
