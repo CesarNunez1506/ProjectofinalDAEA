@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Entities;
+namespace Infrastructure.Data.Entities;
 
 public partial class MonasteryExpense
 {
@@ -15,7 +15,7 @@ public partial class MonasteryExpense
 
     public DateTime Date { get; set; }
 
-    public string Descripci�n { get; set; } = null!;
+    public string Descripción { get; set; } = null!;
 
     public Guid? OverheadsId { get; set; }
 

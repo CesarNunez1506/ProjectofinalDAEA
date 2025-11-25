@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Entities;
+namespace Infrastructure.Data.Entities;
 
 public partial class GeneralIncome
 {
