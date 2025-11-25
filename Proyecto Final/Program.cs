@@ -23,6 +23,7 @@ using System.Text;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Proyecto_Final.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,10 +37,12 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Ap
 
 // Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(Application.Mappings.UserMappingProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(Application.Mappings.InventoryMappingProfile).Assembly);
 
 // Agregar FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Application.Validators.Users.CreateUserDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<Application.Validators.Inventory.CreateProductValidator>();
 
 // Agregar controladores
 builder.Services.AddControllers();
@@ -78,7 +81,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "ST-ERP API",
         Version = "v1",
-        Description = "API del Sistema ERP Santa Teresa - Módulos de Producción y Usuarios"
+        Description = "API del Sistema ERP Santa Teresa - Módulos de Producción, Usuarios e Inventario"
     });
 
     // Configurar JWT en Swagger
@@ -144,6 +147,20 @@ builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// ========== REPOSITORIOS DEL MÓDULO DE INVENTARIO ==========
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IProductRepository, Infrastructure.Repositories.Inventory.ProductRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.ICategoryRepository, Infrastructure.Repositories.Inventory.CategoryRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseRepository, Infrastructure.Repositories.Inventory.WarehouseRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.ISupplierRepository, Infrastructure.Repositories.Inventory.SupplierRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IResourceRepository, Infrastructure.Repositories.Inventory.ResourceRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseProductRepository, Infrastructure.Repositories.Inventory.WarehouseProductRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseResourceRepository, Infrastructure.Repositories.Inventory.WarehouseResourceRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IBuysProductRepository, Infrastructure.Repositories.Inventory.BuysProductRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseMovementProductRepository, Infrastructure.Repositories.Inventory.WarehouseMovementProductRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseMovementResourceRepository, Infrastructure.Repositories.Inventory.WarehouseMovementResourceRepository>();
+
+// Nota: El UnitOfWork ya está registrado arriba y contiene todos los repositorios de Inventario con lazy initialization
+
 // ========== CASOS DE USO - CATEGORÍAS ==========
 builder.Services.AddScoped<CreateCategoryUseCase>();
 builder.Services.AddScoped<GetAllCategoriesUseCase>();
@@ -191,6 +208,9 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = "swagger"; // Acceder desde: http://localhost:5000/swagger
     });
 }
+
+// Middleware global de manejo de excepciones (debe ir primero)
+app.UseGlobalExceptionHandler();
 
 app.UseCors("AllowFrontend");
 app.UseStaticFiles(); // Para servir archivos desde wwwroot/ (imágenes de productos)
