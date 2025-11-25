@@ -30,6 +30,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configurar LocalDbContext para módulo de producción
+builder.Services.AddDbContext<LocalDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Agregar MediatR para CQRS
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Application.DTOs.Users.UserDto>());
@@ -131,13 +135,10 @@ builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ========== REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN ==========
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
-builder.Services.AddScoped<IPlantProductionRepository, PlantProductionRepository>();
-builder.Services.AddScoped<IProductionRepository, ProductionRepository>();
-builder.Services.AddScoped<ILostRepository, LostRepository>();
-builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+// Los repositorios específicos (Category, Product, Recipe, Production, Lost) han sido reemplazados por el repositorio genérico
+// Solo se mantienen repositorios con lógica especial que no puede ser manejada genéricamente
+builder.Services.AddScoped<IPlantProductionRepository, PlantProductionRepository>(); // Mantener si tiene lógica especial
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>(); // Mantener - tiene lógica compleja FIFO
 
 // ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
 builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
