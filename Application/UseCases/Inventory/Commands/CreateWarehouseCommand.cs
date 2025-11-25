@@ -1,7 +1,7 @@
 using Application.DTOs.Inventory;
 using AutoMapper;
 using Domain.Interfaces.Services;
-using Infrastructure.Data.Entities;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.UseCases.Inventory.Commands;

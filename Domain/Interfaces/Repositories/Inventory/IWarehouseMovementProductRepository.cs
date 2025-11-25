@@ -1,4 +1,4 @@
-using Infrastructure.Data.Entities;
+using Domain.Entities;
 
 namespace Domain.Interfaces.Repositories.Inventory;
 

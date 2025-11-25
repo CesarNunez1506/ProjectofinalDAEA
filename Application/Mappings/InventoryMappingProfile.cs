@@ -1,6 +1,6 @@
 using Application.DTOs.Inventory;
 using AutoMapper;
-using Infrastructure.Data.Entities;
+using Domain.Entities;
 
 namespace Application.Mappings;
 

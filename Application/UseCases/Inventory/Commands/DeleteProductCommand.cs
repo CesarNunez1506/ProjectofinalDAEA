@@ -23,7 +23,7 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
 
     public async Task<bool> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await _unitOfWork.Products.GetByIdAsync((int)request.ProductId);
+        var product = await _unitOfWork.Products.FindOneAsync(p => p.Id == request.ProductId);
         if (product == null)
         {
             throw new ProductNotFoundException(request.ProductId);

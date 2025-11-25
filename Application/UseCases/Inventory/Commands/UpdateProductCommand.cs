@@ -28,14 +28,14 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
     public async Task<ProductDto> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         // Validar que el producto exista
-        var product = await _unitOfWork.Products.GetByIdAsync((int)request.Dto.Id);
+        var product = await _unitOfWork.Products.FindOneAsync(p => p.Id == request.Dto.Id);
         if (product == null)
         {
             throw new ProductNotFoundException(request.Dto.Id);
         }
 
         // Validar que la categoría exista
-        var categoryExists = await _unitOfWork.Categories.ExistsAsync(request.Dto.CategoryId);
+        var categoryExists = await _unitOfWork.Categories.ExistsAsync(c => c.Id == request.Dto.CategoryId);
         if (!categoryExists)
         {
             throw new CategoryNotFoundException(request.Dto.CategoryId);

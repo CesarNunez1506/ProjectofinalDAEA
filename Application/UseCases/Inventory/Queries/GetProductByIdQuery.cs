@@ -20,7 +20,7 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, P
 
     public async Task<ProductDto?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
-        var product = await _unitOfWork.Products.GetByIdAsync((int)request.ProductId);
+        var product = await _unitOfWork.Products.FindOneAsync(p => p.Id == request.ProductId);
         return product == null ? null : _mapper.Map<ProductDto>(product);
     }
 }

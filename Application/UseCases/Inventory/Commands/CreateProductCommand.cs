@@ -2,7 +2,7 @@ using Application.DTOs.Inventory;
 using AutoMapper;
 using Domain.Exceptions.Inventory;
 using Domain.Interfaces.Services;
-using Infrastructure.Data.Entities;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.UseCases.Inventory.Commands;
@@ -29,7 +29,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         // Validar que la categoría exista
-        var categoryExists = await _unitOfWork.Categories.ExistsAsync(request.Dto.CategoryId);
+        var categoryExists = await _unitOfWork.Categories.ExistsAsync(c => c.Id == request.Dto.CategoryId);
         if (!categoryExists)
         {
             throw new CategoryNotFoundException(request.Dto.CategoryId);
