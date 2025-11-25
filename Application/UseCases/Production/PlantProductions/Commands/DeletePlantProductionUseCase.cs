@@ -1,4 +1,5 @@
-using Domain.Interfaces.Repositories.Production;
+using Domain.Entities;
+using Domain.Interfaces.Services;
 
 namespace Application.UseCases.Production.PlantProductions;
 
@@ -7,22 +8,29 @@ namespace Application.UseCases.Production.PlantProductions;
 /// </summary>
 public class DeletePlantProductionUseCase
 {
-    private readonly IPlantProductionRepository _plantProductionRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public DeletePlantProductionUseCase(IPlantProductionRepository plantProductionRepository)
+    public DeletePlantProductionUseCase(IUnitOfWork unitOfWork)
     {
-        _plantProductionRepository = plantProductionRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<bool> ExecuteAsync(Guid id)
     {
-        var plantProduction = await _plantProductionRepository.GetByIdAsync(id);
+        var plantRepo = _unitOfWork.GetRepository<PlantProduction>();
+        
+        var plantProduction = await plantRepo.GetByIdAsync(id);
         if (plantProduction == null)
         {
             throw new KeyNotFoundException($"No se encontró la producción de planta con ID {id}");
         }
 
         // Soft delete - marca como inactivo
-        return await _plantProductionRepository.SoftDeleteAsync(id);
+        plantProduction.Status = false;
+        plantProduction.UpdatedAt = DateTime.UtcNow;
+        plantRepo.Update(plantProduction);
+        await _unitOfWork.SaveChangesAsync();
+        
+        return true;
     }
 }

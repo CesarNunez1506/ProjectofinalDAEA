@@ -4,7 +4,6 @@ using Domain.Interfaces.Repositories.Users;
 using Domain.Interfaces.Services.Production;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Services.Users;
-using Infrastructure.Repositories.Production;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Services.Production;
@@ -15,6 +14,7 @@ using Application.UseCases.Production.Products;
 using Application.UseCases.Production.Recipes;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
+using Application.UseCases.Production.PlantProductions;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -135,9 +135,8 @@ builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ========== REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN ==========
-// Los repositorios específicos (Category, Product, Recipe, Production, Lost) han sido reemplazados por el repositorio genérico
+// Los repositorios específicos (Category, Product, Recipe, Production, Lost, PlantProduction) han sido reemplazados por el repositorio genérico
 // Solo se mantienen repositorios con lógica especial que no puede ser manejada genéricamente
-builder.Services.AddScoped<IPlantProductionRepository, PlantProductionRepository>(); // Mantener si tiene lógica especial
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>(); // Mantener - tiene lógica compleja FIFO
 
 // ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
@@ -179,6 +178,13 @@ builder.Services.AddScoped<GetAllLostsUseCase>();
 builder.Services.AddScoped<GetLostByIdUseCase>();
 builder.Services.AddScoped<UpdateLostUseCase>();
 builder.Services.AddScoped<DeleteLostUseCase>();
+
+// ========== CASOS DE USO - PLANTAS DE PRODUCCIÓN ==========
+builder.Services.AddScoped<CreatePlantProductionUseCase>();
+builder.Services.AddScoped<GetAllPlantProductionsUseCase>();
+builder.Services.AddScoped<GetPlantProductionByIdUseCase>();
+builder.Services.AddScoped<UpdatePlantProductionUseCase>();
+builder.Services.AddScoped<DeletePlantProductionUseCase>();
 
 var app = builder.Build();
 
