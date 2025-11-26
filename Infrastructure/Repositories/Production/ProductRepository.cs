@@ -10,9 +10,9 @@ namespace Infrastructure.Repositories.Production;
 /// </summary>
 public class ProductRepository : IProductRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
-    public ProductRepository(LocalDbContext context)
+    public ProductRepository(AppDbContext context)
     {
         _context = context;
     }

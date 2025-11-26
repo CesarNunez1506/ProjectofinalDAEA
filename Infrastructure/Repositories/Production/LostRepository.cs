@@ -10,9 +10,9 @@ namespace Infrastructure.Repositories.Production;
 /// </summary>
 public class LostRepository : ILostRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
-    public LostRepository(LocalDbContext context)
+    public LostRepository(AppDbContext context)
     {
         _context = context;
     }
