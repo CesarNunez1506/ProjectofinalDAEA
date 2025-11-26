@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Proyecto_Final.Controllers.Inventory;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/inventory/[controller]")]
 [Authorize]
 public class CategoriesController : ControllerBase
 {
@@ -88,7 +88,10 @@ public class CategoriesController : ControllerBase
     {
         try
         {
-            dto.Id = id;
+            if (dto.Id != id)
+            {
+                dto.Id = id;
+            }
             var category = await _mediator.Send(new UpdateCategoryCommand(dto));
             return Ok(category);
         }

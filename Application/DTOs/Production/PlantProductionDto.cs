@@ -51,13 +51,13 @@ public class PlantProductionDto
     /// <summary>
     /// Información del almacén (opcional, según include)
     /// </summary>
-    public WarehouseDto? Warehouse { get; set; }
+    public PlantWarehouseDto? Warehouse { get; set; }
 }
 
 /// <summary>
 /// DTO simple para almacén (usado en plantas)
 /// </summary>
-public class WarehouseDto
+public class PlantWarehouseDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

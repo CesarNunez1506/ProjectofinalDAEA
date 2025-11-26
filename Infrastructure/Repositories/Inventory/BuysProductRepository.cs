@@ -17,7 +17,7 @@ public class BuysProductRepository : GenericRepository<BuysProduct>, IBuysProduc
             .Include(bp => bp.Supplier)
             .Include(bp => bp.Warehouse)
             .Where(bp => bp.SupplierId == supplierId)
-            .OrderByDescending(bp => bp.PurchaseDate)
+            .OrderByDescending(bp => bp.EntryDate)
             .ToListAsync();
     }
 
@@ -27,7 +27,7 @@ public class BuysProductRepository : GenericRepository<BuysProduct>, IBuysProduc
             .Include(bp => bp.Supplier)
             .Include(bp => bp.Warehouse)
             .Where(bp => bp.WarehouseId == warehouseId)
-            .OrderByDescending(bp => bp.PurchaseDate)
+            .OrderByDescending(bp => bp.EntryDate)
             .ToListAsync();
     }
 
@@ -36,8 +36,8 @@ public class BuysProductRepository : GenericRepository<BuysProduct>, IBuysProduc
         return await _dbSet
             .Include(bp => bp.Supplier)
             .Include(bp => bp.Warehouse)
-            .Where(bp => bp.PurchaseDate >= startDate && bp.PurchaseDate <= endDate)
-            .OrderByDescending(bp => bp.PurchaseDate)
+            .Where(bp => bp.EntryDate >= startDate && bp.EntryDate <= endDate)
+            .OrderByDescending(bp => bp.EntryDate)
             .ToListAsync();
     }
 
@@ -46,8 +46,7 @@ public class BuysProductRepository : GenericRepository<BuysProduct>, IBuysProduc
         return await _dbSet
             .Include(bp => bp.Supplier)
             .Include(bp => bp.Warehouse)
-            .Include(bp => bp.ProductPurchaseds)
-                .ThenInclude(pp => pp.Product)
+            .Include(bp => bp.Product)
             .FirstOrDefaultAsync(bp => bp.Id == purchaseId);
     }
 
@@ -57,18 +56,18 @@ public class BuysProductRepository : GenericRepository<BuysProduct>, IBuysProduc
             .Include(bp => bp.Supplier)
             .Include(bp => bp.Warehouse)
             .Where(bp => bp.Status == true)
-            .OrderByDescending(bp => bp.PurchaseDate)
+            .OrderByDescending(bp => bp.EntryDate)
             .ToListAsync();
     }
 
     public async Task<decimal> GetTotalPurchasesBySupplierAsync(Guid supplierId, DateTime startDate, DateTime endDate)
     {
-        return await _dbSet
+        return (decimal)await _dbSet
             .Where(bp => bp.SupplierId == supplierId
-                && bp.PurchaseDate >= startDate
-                && bp.PurchaseDate <= endDate
+                && bp.EntryDate >= startDate
+                && bp.EntryDate <= endDate
                 && bp.Status == true)
-            .SumAsync(bp => bp.TotalAmount);
+            .SumAsync(bp => bp.TotalCost);
     }
 
     public async Task<IEnumerable<BuysProduct>> GetRecentPurchasesAsync(int count = 10)
@@ -76,7 +75,7 @@ public class BuysProductRepository : GenericRepository<BuysProduct>, IBuysProduc
         return await _dbSet
             .Include(bp => bp.Supplier)
             .Include(bp => bp.Warehouse)
-            .OrderByDescending(bp => bp.PurchaseDate)
+            .OrderByDescending(bp => bp.EntryDate)
             .Take(count)
             .ToListAsync();
     }

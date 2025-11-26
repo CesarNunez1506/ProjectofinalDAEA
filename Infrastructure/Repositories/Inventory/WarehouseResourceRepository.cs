@@ -59,7 +59,7 @@ public class WarehouseResourceRepository : GenericRepository<WarehouseResource>,
 
     public async Task<int> GetTotalStockByResourceAsync(Guid resourceId)
     {
-        return await _dbSet
+        return (int)await _dbSet
             .Where(wr => wr.ResourceId == resourceId && wr.Status == true)
             .SumAsync(wr => wr.Quantity);
     }

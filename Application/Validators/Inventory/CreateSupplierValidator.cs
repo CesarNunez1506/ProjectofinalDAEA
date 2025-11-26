@@ -1,4 +1,5 @@
 using Application.DTOs.Inventory;
+using Application.DTOs.Inventory;
 using FluentValidation;
 
 namespace Application.Validators.Inventory;

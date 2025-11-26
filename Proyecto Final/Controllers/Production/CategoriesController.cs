@@ -8,7 +8,7 @@ namespace Proyecto_Final.Controllers.ProductionModule;
 /// Controlador para gestión de categorías de productos
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/production/[controller]")]
 [Produces("application/json")]
 public class CategoriesController : ControllerBase
 {

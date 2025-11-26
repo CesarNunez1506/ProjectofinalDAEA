@@ -1,4 +1,6 @@
 using Application.DTOs.Inventory;
+using Application.DTOs.Inventory;
+using Application.DTOs.Inventory;
 using AutoMapper;
 using Domain.Exceptions.Inventory;
 using Domain.Interfaces.Services;

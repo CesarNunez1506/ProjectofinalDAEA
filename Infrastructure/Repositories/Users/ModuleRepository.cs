@@ -7,9 +7,9 @@ namespace Infrastructure.Repositories.Users;
 
 public class ModuleRepository : IModuleRepository
 {
-    private readonly AppDbContext _context;
+    private readonly LocalDbContext _context;
 
-    public ModuleRepository(AppDbContext context)
+    public ModuleRepository(LocalDbContext context)
     {
         _context = context;
     }

@@ -28,7 +28,7 @@ using Proyecto_Final.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configurar DbContext (ya existente en el proyecto)
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Agregar MediatR para CQRS
@@ -83,6 +83,9 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "API del Sistema ERP Santa Teresa - Módulos de Producción, Usuarios e Inventario"
     });
+
+    // Resolver conflictos de nombres de DTOs usando namespace completo
+    options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
 
     // Configurar JWT en Swagger
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme

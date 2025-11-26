@@ -1,4 +1,5 @@
 using Application.DTOs.Inventory;
+using Application.DTOs.Inventory;
 using AutoMapper;
 using Domain.Exceptions.Inventory;
 using Domain.Interfaces.Services;
@@ -34,21 +35,24 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
             throw new ProductNotFoundException(request.Dto.Id);
         }
 
-        // Validar que la categoría exista
-        var categoryExists = await _unitOfWork.Categories.ExistsAsync(c => c.Id == request.Dto.CategoryId);
-        if (!categoryExists)
+        // Validar que la categoría exista (si se proporciona)
+        if (request.Dto.CategoryId.HasValue)
         {
-            throw new CategoryNotFoundException(request.Dto.CategoryId);
+            var categoryExists = await _unitOfWork.Categories.ExistsAsync(c => c.Id == request.Dto.CategoryId.Value);
+            if (!categoryExists)
+            {
+                throw new CategoryNotFoundException(request.Dto.CategoryId.Value);
+            }
         }
 
         // Actualizar propiedades
-        product.Name = request.Dto.Name;
-        product.CategoryId = request.Dto.CategoryId;
-        product.Price = request.Dto.Price;
-        product.Description = request.Dto.Description;
-        product.ImagenUrl = request.Dto.ImagenUrl;
-        product.Status = request.Dto.Status;
-        product.Producible = request.Dto.Producible;
+        if (request.Dto.Name != null) product.Name = request.Dto.Name;
+        if (request.Dto.CategoryId.HasValue) product.CategoryId = request.Dto.CategoryId.Value;
+        if (request.Dto.Price.HasValue) product.Price = request.Dto.Price.Value;
+        if (request.Dto.Description != null) product.Description = request.Dto.Description;
+        if (request.Dto.ImagenUrl != null) product.ImagenUrl = request.Dto.ImagenUrl;
+        if (request.Dto.Status.HasValue) product.Status = request.Dto.Status.Value;
+        if (request.Dto.Producible.HasValue) product.Producible = request.Dto.Producible.Value;
         product.UpdatedAt = DateTime.UtcNow;
 
         await _unitOfWork.Products.UpdateAsync(product);

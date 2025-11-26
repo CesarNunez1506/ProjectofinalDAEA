@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Proyecto_Final.Controllers.Inventory;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/inventory/[controller]")]
 [Authorize]
 public class SuppliersController : ControllerBase
 {

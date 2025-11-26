@@ -1,0 +1,60 @@
+using Application.DTOs.Inventory;
+using Application.DTOs.Inventory;
+using Domain.Interfaces.Services;
+using MediatR;
+
+namespace Application.UseCases.Inventory.Commands;
+
+public record TransferProductBetweenWarehousesCommand(TransferProductDto Dto) : IRequest<bool>;
+
+public class TransferProductBetweenWarehousesCommandHandler : IRequestHandler<TransferProductBetweenWarehousesCommand, bool>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public TransferProductBetweenWarehousesCommandHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<bool> Handle(TransferProductBetweenWarehousesCommand request, CancellationToken cancellationToken)
+    {
+        var sourceWarehouseProduct = await _unitOfWork.WarehouseProducts.FindOneAsync(
+            wp => wp.WarehouseId == request.Dto.SourceWarehouseId && wp.ProductId == request.Dto.ProductId);
+
+        if (sourceWarehouseProduct == null || sourceWarehouseProduct.Quantity < request.Dto.Quantity)
+        {
+            throw new Exception("Insufficient stock in source warehouse");
+        }
+
+        sourceWarehouseProduct.Quantity -= request.Dto.Quantity;
+        sourceWarehouseProduct.UpdatedAt = DateTime.UtcNow;
+        await _unitOfWork.WarehouseProducts.UpdateAsync(sourceWarehouseProduct);
+
+        var destinationWarehouseProduct = await _unitOfWork.WarehouseProducts.FindOneAsync(
+            wp => wp.WarehouseId == request.Dto.DestinationWarehouseId && wp.ProductId == request.Dto.ProductId);
+
+        if (destinationWarehouseProduct != null)
+        {
+            destinationWarehouseProduct.Quantity += request.Dto.Quantity;
+            destinationWarehouseProduct.UpdatedAt = DateTime.UtcNow;
+            await _unitOfWork.WarehouseProducts.UpdateAsync(destinationWarehouseProduct);
+        }
+        else
+        {
+            var newWarehouseProduct = new Domain.Entities.WarehouseProduct
+            {
+                Id = Guid.NewGuid(),
+                WarehouseId = request.Dto.DestinationWarehouseId,
+                ProductId = request.Dto.ProductId,
+                Quantity = request.Dto.Quantity,
+                Status = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _unitOfWork.WarehouseProducts.AddAsync(newWarehouseProduct);
+        }
+
+        await _unitOfWork.SaveChangesAsync();
+        return true;
+    }
+}

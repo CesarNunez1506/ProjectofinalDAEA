@@ -48,7 +48,7 @@ public class WarehouseRepository : GenericRepository<Warehouse>, IWarehouseRepos
         var warehouseResource = await _context.WarehouseResources
             .FirstOrDefaultAsync(wr => wr.WarehouseId == warehouseId && wr.ResourceId == resourceId);
 
-        return warehouseResource?.Quantity ?? 0;
+        return (int)(warehouseResource?.Quantity ?? 0);
     }
 
     public async Task<IEnumerable<Warehouse>> SearchByLocationAsync(string location)
