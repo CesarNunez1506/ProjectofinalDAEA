@@ -1,5 +1,7 @@
 using Domain.Interfaces.Repositories.Production;
 using Domain.Interfaces.Repositories;
+using Domain.Entities;
+using Infrastructure.Repositories;
 using Domain.Interfaces.Repositories.Users;
 using Domain.Interfaces.Services.Production;
 using Domain.Interfaces.Services;
@@ -30,9 +32,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Algunas implementaciones antiguas usan LocalDbContext; registrarlo también
+builder.Services.AddDbContext<LocalDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Agregar MediatR para CQRS
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Application.DTOs.Users.UserDto>());
+// Register MediatR handlers from Application assembly (Finance handlers live there)
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.Mappings.FinanceMappingProfile).Assembly));
 
 // Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(Application.Mappings.UserMappingProfile).Assembly);
@@ -143,6 +151,13 @@ builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// ======= FINANZAS - Repositorios =======
+builder.Services.AddScoped(typeof(Domain.Interfaces.Repositories.IGenericRepository<>), typeof(Infrastructure.Repositories.GenericRepository<>));
+builder.Services.AddScoped<Domain.Interfaces.Repositories.IGeneralIncomeRepository, Infrastructure.Repositories.GeneralIncomeRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.IGeneralExpenseRepository, Infrastructure.Repositories.GeneralExpenseRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.IOverheadRepository, Infrastructure.Repositories.OverheadRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.IFinancialReportRepository, Infrastructure.Repositories.FinanceRepository>();
 
 // ========== CASOS DE USO - CATEGORÍAS ==========
 builder.Services.AddScoped<CreateCategoryUseCase>();
