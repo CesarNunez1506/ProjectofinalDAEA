@@ -1,12 +1,16 @@
 using Domain.Interfaces.Repositories.Production;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Repositories.Users;
+using Domain.Interfaces.Repositories.Rentals;
+using Domain.Interfaces.Repositories.Finance;
 using Domain.Interfaces.Services.Production;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Services.Users;
 using Infrastructure.Repositories.Production;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
+using Infrastructure.Repositories.Rentals;
+using Infrastructure.Repositories.Finance;
 using Infrastructure.Services.Production;
 using Infrastructure.Services;
 using Infrastructure.Services.Users;
@@ -15,6 +19,7 @@ using Application.UseCases.Production.Products;
 using Application.UseCases.Production.Recipes;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
+using Application.UseCases.Rentals.Rentals;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -121,10 +126,10 @@ builder.Services.AddCors(options =>
 });
 
 // ========== REPOSITORIOS DEL MÓDULO DE USUARIOS ==========
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Users.IUserRepository, Infrastructure.Repositories.Users.UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Users.IModuleRepository, Infrastructure.Repositories.Users.ModuleRepository>();
 
 // ========== SERVICIOS DEL MÓDULO DE USUARIOS ==========
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
@@ -138,6 +143,16 @@ builder.Services.AddScoped<IPlantProductionRepository, PlantProductionRepository
 builder.Services.AddScoped<IProductionRepository, ProductionRepository>();
 builder.Services.AddScoped<ILostRepository, LostRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+
+// ========== REPOSITORIOS DEL MÓDULO DE ALQUILERES ==========
+builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+builder.Services.AddScoped<IPlaceRepository, PlaceRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Rentals.IUserRepository, Infrastructure.Repositories.Rentals.UserRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IFinancialReportRepository, Infrastructure.Repositories.Finance.FinancialReportRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IGeneralIncomeRepository, Infrastructure.Repositories.Finance.GeneralIncomeRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IModuleRepository, Infrastructure.Repositories.Finance.ModuleRepository>();
 
 // ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
 builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
@@ -178,6 +193,13 @@ builder.Services.AddScoped<GetAllLostsUseCase>();
 builder.Services.AddScoped<GetLostByIdUseCase>();
 builder.Services.AddScoped<UpdateLostUseCase>();
 builder.Services.AddScoped<DeleteLostUseCase>();
+
+// ========== CASOS DE USO - ALQUILERES ==========
+builder.Services.AddScoped<CreateRentalUseCase>();
+builder.Services.AddScoped<GetAllRentalsUseCase>();
+builder.Services.AddScoped<GetRentalByIdUseCase>();
+builder.Services.AddScoped<UpdateRentalUseCase>();
+builder.Services.AddScoped<ToggleRentalStatusUseCase>();
 
 var app = builder.Build();
 
