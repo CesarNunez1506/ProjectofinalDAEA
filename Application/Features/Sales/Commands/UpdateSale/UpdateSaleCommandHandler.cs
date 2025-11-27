@@ -5,16 +5,25 @@ namespace Application.Features.Sales.Commands.UpdateSale
 {
     public class UpdateSaleCommandHandler : IRequestHandler<UpdateSaleCommand, bool>
     {
-        private readonly ISaleRepository _saleRepository;
+        private readonly ISaleRepository _saleRepo;
 
-        public UpdateSaleCommandHandler(ISaleRepository saleRepository)
+        public UpdateSaleCommandHandler(ISaleRepository saleRepo)
         {
-            _saleRepository = saleRepository;
+            _saleRepo = saleRepo;
         }
 
         public async Task<bool> Handle(UpdateSaleCommand request, CancellationToken cancellationToken)
         {
-            return await _saleRepository.UpdateSaleAsync(request.SaleId, request.NewTotalAmount);
+            var sale = await _saleRepo.GetByIdAsync(request.SaleId);
+
+            if (sale == null)
+                return false;
+
+            sale.Observations = request.Observations;
+            sale.UpdatedAt = DateTime.Now;
+
+            await _saleRepo.UpdateAsync(sale);
+            return true;
         }
     }
 }

@@ -5,16 +5,16 @@ namespace Application.Features.Sales.Commands.ProcessRefund
 {
     public class ProcessRefundCommandHandler : IRequestHandler<ProcessRefundCommand, bool>
     {
-        private readonly ISaleRepository _saleRepository;
+        private readonly ISaleRepository _saleRepo;
 
-        public ProcessRefundCommandHandler(ISaleRepository saleRepository)
+        public ProcessRefundCommandHandler(ISaleRepository saleRepo)
         {
-            _saleRepository = saleRepository;
+            _saleRepo = saleRepo;
         }
 
         public async Task<bool> Handle(ProcessRefundCommand request, CancellationToken cancellationToken)
         {
-            return await _saleRepository.ProcessRefundAsync(request.SaleId, request.RefundAmount);
+            return await _saleRepo.ProcessRefundAsync(request.SaleId);
         }
     }
 }
