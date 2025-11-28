@@ -10,9 +10,9 @@ namespace Infrastructure.Repositories;
 /// </summary>
 public class WarehouseRepository : IWarehouseRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
-    public WarehouseRepository(LocalDbContext context)
+    public WarehouseRepository(AppDbContext context)
     {
         _context = context;
     }
