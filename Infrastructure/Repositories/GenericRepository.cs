@@ -10,10 +10,10 @@ namespace Infrastructure.Repositories;
 /// </summary>
 public class GenericRepository<T> : IRepository<T> where T : class
 {
-    protected readonly LocalDbContext _context;
+    protected readonly AppDbContext _context;
     protected readonly DbSet<T> _dbSet;
 
-    public GenericRepository(LocalDbContext context)
+    public GenericRepository(AppDbContext context)
     {
         _context = context;
         _dbSet = _context.Set<T>();
