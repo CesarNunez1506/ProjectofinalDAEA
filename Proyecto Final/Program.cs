@@ -15,7 +15,6 @@ using Application.UseCases.Production.Recipes;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
 using Application.UseCases.Production.PlantProductions;
-using Application.UseCases.Rentals;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -222,6 +221,21 @@ builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetAllLocation
 builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetLocationByIdUseCase>();
 builder.Services.AddScoped<Application.UseCases.Rentals.Locations.UpdateLocationUseCase>();
 builder.Services.AddScoped<Application.UseCases.Rentals.Locations.DeleteLocationUseCase>();
+
+// ========== CASOS DE USO - GASTOS DEL MONASTERIO ==========
+builder.Services.AddScoped<CreateMonasteryExpenseUseCase>();
+builder.Services.AddScoped<GetAllMonasteryExpensesUseCase>();
+builder.Services.AddScoped<GetMonasteryExpenseByIdUseCase>();
+builder.Services.AddScoped<UpdateMonasteryExpenseUseCase>();
+builder.Services.AddScoped<DeleteMonasteryExpenseUseCase>();
+
+// ========== CASOS DE USO - OVERHEADS (MONASTERIO) ==========
+builder.Services.AddScoped<CreateOverheadUseCase>();
+builder.Services.AddScoped<GetAllOverheadsUseCase>();
+builder.Services.AddScoped<GetOverheadByIdUseCase>();
+builder.Services.AddScoped<UpdateOverheadUseCase>();
+builder.Services.AddScoped<DeleteOverheadUseCase>();
+builder.Services.AddScoped<GetExpensesByDateRangeUseCase>();
 
 var app = builder.Build();
 
