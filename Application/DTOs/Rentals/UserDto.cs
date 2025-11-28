@@ -1,0 +1,9 @@
+namespace Application.DTOs.Rentals;
+
+// DTO de respuesta para usuario
+public class UserDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}
