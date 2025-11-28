@@ -23,19 +23,22 @@ public class WarehouseRepository : IWarehouseRepository
             .FirstOrDefaultAsync(wp => wp.WarehouseId == warehouseId && wp.ProductId == productId);
     }
 
-    public async Task AddWarehouseProductAsync(WarehouseProduct warehouseProduct)
+    public Task AddWarehouseProductAsync(WarehouseProduct warehouseProduct)
     {
         _context.WarehouseProducts.Add(warehouseProduct);
+        return Task.CompletedTask;
     }
 
-    public async Task UpdateWarehouseProductAsync(WarehouseProduct warehouseProduct)
+    public Task UpdateWarehouseProductAsync(WarehouseProduct warehouseProduct)
     {
         _context.WarehouseProducts.Update(warehouseProduct);
+        return Task.CompletedTask;
     }
 
-    public async Task AddWarehouseMovementProductAsync(WarehouseMovementProduct movement)
+    public Task AddWarehouseMovementProductAsync(WarehouseMovementProduct movement)
     {
         _context.WarehouseMovementProducts.Add(movement);
+        return Task.CompletedTask;
     }
 
     public async Task<List<WarehouseResource>> GetWarehouseResourcesByResourceIdAsync(Guid warehouseId, Guid resourceId)
@@ -46,14 +49,16 @@ public class WarehouseRepository : IWarehouseRepository
             .ToListAsync();
     }
 
-    public async Task UpdateWarehouseResourceAsync(WarehouseResource warehouseResource)
+    public Task UpdateWarehouseResourceAsync(WarehouseResource warehouseResource)
     {
         _context.WarehouseResources.Update(warehouseResource);
+        return Task.CompletedTask;
     }
 
-    public async Task AddWarehouseMovementResourceAsync(WarehouseMovementResource movement)
+    public Task AddWarehouseMovementResourceAsync(WarehouseMovementResource movement)
     {
         _context.WarehouseMovementResources.Add(movement);
+        return Task.CompletedTask;
     }
 
     public async Task<Resource?> GetResourceByIdAsync(Guid resourceId)
