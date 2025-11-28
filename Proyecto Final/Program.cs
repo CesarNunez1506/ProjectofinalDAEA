@@ -25,6 +25,7 @@ using System.Text;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,15 +33,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Algunas implementaciones antiguas usan LocalDbContext; registrarlo también
+// Configurar LocalDbContext para módulo de producción
 builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Agregar MediatR para CQRS
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Application.DTOs.Users.UserDto>());
-// Register MediatR handlers from Application assembly (Finance handlers live there)
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.Mappings.FinanceMappingProfile).Assembly));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.Mappings.FinancialProfile).Assembly));
 
 // Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(Application.Mappings.UserMappingProfile).Assembly);

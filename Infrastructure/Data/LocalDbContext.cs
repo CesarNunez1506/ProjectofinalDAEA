@@ -510,7 +510,7 @@ public partial class LocalDbContext : DbContext
                 .HasColumnName("category");
             entity.Property(e => e.CreatedAt).HasColumnName("createdAt");
             entity.Property(e => e.Date).HasColumnName("date");
-            entity.Property(e => e.Descripción)
+            entity.Property(e => e.Descripcion)
                 .HasMaxLength(255)
                 .HasColumnName("descripción");
             entity.Property(e => e.Name).HasMaxLength(255);
