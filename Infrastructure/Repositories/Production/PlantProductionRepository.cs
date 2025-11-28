@@ -10,9 +10,9 @@ namespace Infrastructure.Repositories.Production;
 /// </summary>
 public class PlantProductionRepository : IPlantProductionRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
-    public PlantProductionRepository(LocalDbContext context)
+    public PlantProductionRepository(AppDbContext context)
     {
         _context = context;
     }

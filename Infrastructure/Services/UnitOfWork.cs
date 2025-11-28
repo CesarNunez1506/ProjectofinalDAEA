@@ -9,10 +9,10 @@ namespace Infrastructure.Services;
 /// </summary>
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
     private IDbContextTransaction? _transaction;
 
-    public UnitOfWork(LocalDbContext context)
+    public UnitOfWork(AppDbContext context)
     {
         _context = context;
     }

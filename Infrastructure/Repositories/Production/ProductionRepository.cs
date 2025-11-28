@@ -11,9 +11,9 @@ namespace Infrastructure.Repositories.Production;
 /// </summary>
 public class ProductionRepository : IProductionRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
-    public ProductionRepository(LocalDbContext context)
+    public ProductionRepository(AppDbContext context)
     {
         _context = context;
     }

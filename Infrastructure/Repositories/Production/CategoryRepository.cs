@@ -10,9 +10,9 @@ namespace Infrastructure.Repositories.Production;
 /// </summary>
 public class CategoryRepository : ICategoryRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
-    public CategoryRepository(LocalDbContext context)
+    public CategoryRepository(AppDbContext context)
     {
         _context = context;
     }

@@ -10,9 +10,9 @@ namespace Infrastructure.Repositories.Production;
 /// </summary>
 public class RecipeRepository : IRecipeRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
-    public RecipeRepository(LocalDbContext context)
+    public RecipeRepository(AppDbContext context)
     {
         _context = context;
     }
