@@ -124,7 +124,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IModuleRepository, Infrastructure.Repositories.Modules.ModuleRepository>();
 
 // ========== SERVICIOS DEL MÓDULO DE USUARIOS ==========
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
@@ -178,6 +178,14 @@ builder.Services.AddScoped<GetAllLostsUseCase>();
 builder.Services.AddScoped<GetLostByIdUseCase>();
 builder.Services.AddScoped<UpdateLostUseCase>();
 builder.Services.AddScoped<DeleteLostUseCase>();
+
+// ========== CASOS DE USO - MÓDULOS ==========
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetAllModulesQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetModuleByIdQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.SearchModulesByNameQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.CreateModuleCommand>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.UpdateModuleCommand>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.DeleteModuleCommand>();
 
 var app = builder.Build();
 
