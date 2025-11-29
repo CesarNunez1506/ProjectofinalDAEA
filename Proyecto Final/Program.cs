@@ -202,7 +202,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowFrontend");
 app.UseStaticFiles(); // Para servir archivos desde wwwroot/ (imágenes de productos)
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication(); // IMPORTANTE: Authentication antes de Authorization
 app.UseAuthorization();
 app.MapControllers();
