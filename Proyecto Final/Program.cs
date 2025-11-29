@@ -1,15 +1,11 @@
 using Domain.Interfaces.Repositories.Production;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Repositories.Users;
-using Domain.Interfaces.Repositories.Rentals;
-using Domain.Interfaces.Repositories.Finance;
 using Domain.Interfaces.Services.Production;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Services.Users;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
-using Infrastructure.Repositories.Rentals;
-using Infrastructure.Repositories.Finance;
 using Infrastructure.Services.Production;
 using Infrastructure.Services;
 using Infrastructure.Services.Users;
@@ -19,7 +15,7 @@ using Application.UseCases.Production.Recipes;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
 using Application.UseCases.Production.PlantProductions;
-using Application.UseCases.Rentals.Rentals;
+using Application.UseCases.Rentals;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -130,10 +126,10 @@ builder.Services.AddCors(options =>
 });
 
 // ========== REPOSITORIOS DEL MÓDULO DE USUARIOS ==========
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Users.IUserRepository, Infrastructure.Repositories.Users.UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Users.IModuleRepository, Infrastructure.Repositories.Users.ModuleRepository>();
+builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 
 // ========== SERVICIOS DEL MÓDULO DE USUARIOS ==========
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
@@ -145,14 +141,12 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>(); // Mantener - tiene lógica compleja FIFO
 
 // ========== REPOSITORIOS DEL MÓDULO DE ALQUILERES ==========
-builder.Services.AddScoped<IRentalRepository, RentalRepository>();
-builder.Services.AddScoped<IPlaceRepository, PlaceRepository>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<ILocationRepository, LocationRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Rentals.IUserRepository, Infrastructure.Repositories.Rentals.UserRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IFinancialReportRepository, Infrastructure.Repositories.Finance.FinancialReportRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IGeneralIncomeRepository, Infrastructure.Repositories.Finance.GeneralIncomeRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IModuleRepository, Infrastructure.Repositories.Finance.ModuleRepository>();
+// Todos los repositorios específicos de Rentals han sido eliminados y reemplazados por el repositorio genérico
+// La lógica de CheckOverlapAsync se implementa directamente en los UseCases usando GenericRepository
+
+// ========== REPOSITORIOS DEL MÓDULO DE FINANZAS ==========
+// Todos los repositorios específicos de Finance han sido eliminados y reemplazados por el repositorio genérico
+// FinancialReportRepository, GeneralIncomeRepository, ModuleRepository -> Ahora usan GenericRepository via UnitOfWork
 
 // ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
 builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
@@ -207,6 +201,27 @@ builder.Services.AddScoped<GetAllRentalsUseCase>();
 builder.Services.AddScoped<GetRentalByIdUseCase>();
 builder.Services.AddScoped<UpdateRentalUseCase>();
 builder.Services.AddScoped<ToggleRentalStatusUseCase>();
+
+// ========== CASOS DE USO - CLIENTES ==========
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.CreateCustomerUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.GetAllCustomersUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.GetCustomerByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.UpdateCustomerUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.DeleteCustomerUseCase>();
+
+// ========== CASOS DE USO - LUGARES ==========
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.CreatePlaceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.GetAllPlacesUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.GetPlaceByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.UpdatePlaceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.DeletePlaceUseCase>();
+
+// ========== CASOS DE USO - UBICACIONES ==========
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.CreateLocationUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetAllLocationsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetLocationByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.UpdateLocationUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.DeleteLocationUseCase>();
 
 var app = builder.Build();
 
