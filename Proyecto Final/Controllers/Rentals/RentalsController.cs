@@ -1,8 +1,8 @@
 using Application.DTOs.Rentals;
-using Application.UseCases.Rentals.Rentals;
+using Application.UseCases.Rentals;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Proyecto_Final.Controllers.RentalsModule;
+namespace Proyecto_Final.Controllers.Rentals;
 
 [ApiController]
 [Route("api/rentals")]

@@ -60,7 +60,7 @@ public class RentalDto
     
     public CustomerDto? Customer { get; set; }
     public PlaceDto? Place { get; set; }
-    public UserDto? User { get; set; }
+    public RentalUserDto? User { get; set; }
 }
 
 // DTO de respuesta para alquiler creado con ingreso generado
