@@ -6,7 +6,6 @@ using Domain.Interfaces.Repositories.Users;
 using Domain.Interfaces.Services.Production;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Services.Users;
-using Infrastructure.Repositories.Production;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Services.Production;
@@ -38,7 +37,7 @@ builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Agregar MediatR para CQRS
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.Mappings.FinancialProfile).Assembly));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.DTOs.Finance.ExpenseDto).Assembly));
 
 // Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(Application.Mappings.UserMappingProfile).Assembly);
@@ -137,21 +136,10 @@ builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ========== REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN ==========
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
-builder.Services.AddScoped<IPlantProductionRepository, PlantProductionRepository>();
-builder.Services.AddScoped<IProductionRepository, ProductionRepository>();
-builder.Services.AddScoped<ILostRepository, LostRepository>();
-builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 
-// ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
-builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
-builder.Services.AddScoped<IFileStorageService, FileStorageService>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // ======= FINANZAS - Repositorios =======
-builder.Services.AddScoped(typeof(Domain.Interfaces.Repositories.IGenericRepository<>), typeof(Infrastructure.Repositories.GenericRepository<>));
+//builder.Services.AddScoped(typeof(Domain.Interfaces.Repositories.IGenericRepository<>), typeof(Infrastructure.Repositories.GenericRepository<>));
 builder.Services.AddScoped<Domain.Interfaces.Repositories.IGeneralIncomeRepository, Infrastructure.Repositories.GeneralIncomeRepository>();
 builder.Services.AddScoped<Domain.Interfaces.Repositories.IGeneralExpenseRepository, Infrastructure.Repositories.GeneralExpenseRepository>();
 builder.Services.AddScoped<Domain.Interfaces.Repositories.IOverheadRepository, Infrastructure.Repositories.OverheadRepository>();

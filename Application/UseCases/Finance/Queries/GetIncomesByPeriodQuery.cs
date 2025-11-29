@@ -3,6 +3,6 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 
-namespace Application.Features.Finance.Queries;
+namespace Application.UseCases.Finance.Queries;
 
 public record GetIncomesByPeriodQuery(DateTime Start, DateTime End) : IRequest<IEnumerable<IncomeDto>>;

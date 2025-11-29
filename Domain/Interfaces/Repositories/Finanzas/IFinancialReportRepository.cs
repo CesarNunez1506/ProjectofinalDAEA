@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces.Repositories
 {
-    public interface IFinancialReportRepository : IGenericRepository<FinancialReport>
+    public interface IFinancialReportRepository : IRepository<FinancialReport>
     {
         Task<FinancialReport> GenerateReportAsync(DateTime start, DateTime? end = null);
     }

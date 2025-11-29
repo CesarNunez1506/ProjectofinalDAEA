@@ -1,5 +1,5 @@
 using Application.DTOs.Finance;
-using Application.Features.Finance.Commands;
+using Application.UseCases.Finance.Commands;    // ← CORREGIDO
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
