@@ -1349,8 +1349,6 @@ public partial class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new MuseoConfiguration());
 
         OnModelCreatingPartial(modelBuilder);
-
-
         
     }
 
