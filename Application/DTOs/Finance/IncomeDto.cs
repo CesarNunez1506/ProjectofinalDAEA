@@ -1,13 +1,31 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace Application.DTOs.Finance
 {
     public class IncomeDto
     {
-        public System.Guid? Id { get; set; }
-        public System.Guid ModuleId { get; set; }
+        public Guid Id { get; set; }
+        public Guid ModuleId { get; set; }
+
+        [Required(ErrorMessage = "El tipo de ingreso es requerido")]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "El tipo de ingreso debe tener entre 1 y 100 caracteres")]
         public string IncomeType { get; set; } = string.Empty;
-        public decimal Amount { get; set; }
-        public System.DateTime Date { get; set; }
+
+        [StringLength(255, ErrorMessage = "La descripción no debe exceder los 255 caracteres")]
         public string? Description { get; set; }
-        public System.Guid? ReportId { get; set; }
+
+        [Required(ErrorMessage = "El monto es requerido")]
+        public decimal Amount { get; set; }
+
+        [Required]
+        public DateTime Date { get; set; }
+
+        public Guid? ReportId { get; set; }
+
+        // Campos estándar para consistencia
+        public bool? Status { get; set; } = true;
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

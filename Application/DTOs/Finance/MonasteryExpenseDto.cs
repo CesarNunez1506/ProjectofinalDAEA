@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.Finance.Request
+namespace Application.DTOs.Finance
 {
-    public class CreateExpenseDto
+    public class MonasteryExpenseDto
     {
+        public Guid Id { get; set; }
         public Guid ModuleId { get; set; }
         public string ExpenseType { get; set; } = string.Empty;
         public string? Description { get; set; }

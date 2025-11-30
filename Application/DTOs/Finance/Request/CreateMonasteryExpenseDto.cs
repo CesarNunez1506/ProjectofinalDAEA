@@ -2,7 +2,7 @@ using System;
 
 namespace Application.DTOs.Finance.Request
 {
-    public class CreateExpenseDto
+    public class CreateMonasteryExpenseDto
     {
         public Guid ModuleId { get; set; }
         public string ExpenseType { get; set; } = string.Empty;

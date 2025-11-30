@@ -6,7 +6,6 @@ using Domain.Interfaces.Repositories.Users;
 using Domain.Interfaces.Services.Production;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Services.Users;
-using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Services.Production;
 using Infrastructure.Services;
@@ -140,10 +139,32 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ======= FINANZAS - Repositorios =======
 //builder.Services.AddScoped(typeof(Domain.Interfaces.Repositories.IGenericRepository<>), typeof(Infrastructure.Repositories.GenericRepository<>));
-builder.Services.AddScoped<Domain.Interfaces.Repositories.IGeneralIncomeRepository, Infrastructure.Repositories.GeneralIncomeRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.IGeneralExpenseRepository, Infrastructure.Repositories.GeneralExpenseRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finanzas.IGeneralIncomeRepository, Infrastructure.Repositories.GeneralIncomeRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finanzas.IGeneralExpenseRepository, Infrastructure.Repositories.GeneralExpenseRepository>();
 builder.Services.AddScoped<Domain.Interfaces.Repositories.IOverheadRepository, Infrastructure.Repositories.OverheadRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.IFinancialReportRepository, Infrastructure.Repositories.FinanceRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finanzas.IFinancialReportRepository, Infrastructure.Repositories.FinancialReportRepository>();
+
+// Registrar UnitOfWork para que los casos de uso puedan inyectarlo
+builder.Services.AddScoped<Domain.Interfaces.Services.IUnitOfWork, Infrastructure.Services.UnitOfWork>();
+
+// Servicios del módulo de Producción (utilizados por los UseCases)
+builder.Services.AddScoped<Domain.Interfaces.Services.Production.IFileStorageService, Infrastructure.Services.Production.FileStorageService>();
+builder.Services.AddScoped<Domain.Interfaces.Services.Production.IUnitConversionService, Infrastructure.Services.Production.UnitConversionService>();
+// Repositorios necesarios para casos de uso de Producción
+builder.Services.AddScoped<Domain.Interfaces.Repositories.IWarehouseRepository, Infrastructure.Repositories.WarehouseRepository>();
+
+// FINANZAS: Se eliminó el registro directo de adaptadores individuales.
+// Restaurando registro de adaptadores/handlers en la estructura Commands/Queries
+// Registrar adaptadores (Commands / Queries) para inyección en controladores
+builder.Services.AddScoped<Application.UseCases.Finance.Commands.FinancialReports.CreateIncomeCommand>();
+builder.Services.AddScoped<Application.UseCases.Finance.Commands.FinancialReports.CreateExpenseCommand>();
+builder.Services.AddScoped<Application.UseCases.Finance.Commands.FinancialReports.RecordOverheadCommand>();
+builder.Services.AddScoped<Application.UseCases.Finance.Commands.FinancialReports.GenerateFinancialReportCommand>();
+
+builder.Services.AddScoped<Application.UseCases.Finance.Queries.FinancialReports.GetIncomesByPeriodQuery>();
+builder.Services.AddScoped<Application.UseCases.Finance.Queries.FinancialReports.GetExpensesByPeriodQuery>();
+builder.Services.AddScoped<Application.UseCases.Finance.Queries.FinancialReports.GetFinancialReportByDateQuery>();
+builder.Services.AddScoped<Application.UseCases.Finance.Queries.FinancialReports.GetProfitLossStatementQuery>();
 
 // ========== CASOS DE USO - CATEGORÍAS ==========
 builder.Services.AddScoped<CreateCategoryUseCase>();
