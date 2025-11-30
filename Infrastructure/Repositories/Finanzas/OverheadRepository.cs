@@ -1,8 +1,7 @@
 using Domain.Entities;
-using Domain.Interfaces.Repositories.Finanzas;
-using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Domain.Interfaces.Repositories.Finance;
 
 namespace Infrastructure.Repositories
 {
@@ -21,8 +20,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<Overhead>> GetByTypeAsync(string type)
         {
-            return await _context.Overheads
+            return await _dbSet
                 .Where(o => o.Type == type)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -31,8 +31,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<Overhead>> GetByStatusAsync(bool status)
         {
-            return await _context.Overheads
+            return await _dbSet
                 .Where(o => o.Status == status)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -41,8 +42,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<Overhead>> GetByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.Overheads
+            return await _dbSet
                 .Where(o => o.Date >= startDate && o.Date <= endDate)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -51,7 +53,7 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<decimal> GetTotalAmountByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.Overheads
+            return await _dbSet
                 .Where(o => o.Date >= startDate && o.Date <= endDate)
                 .SumAsync(o => o.Amount);
         }
@@ -61,16 +63,22 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<Overhead?> GetWithExpensesAsync(Guid overheadId)
         {
-            return await _context.Overheads
+            return await _dbSet
                 .Include(o => o.MonasteryExpenses)
                 .FirstOrDefaultAsync(o => o.Id == overheadId);
         }
 
-        public void Delete(Overhead entity)
+        /// <summary>
+        /// Eliminar overhead
+        /// </summary>
+        public void DeleteOverhead(Overhead entity)
         {
-            _context.Overheads.Remove(entity);
+            Remove(entity);
         }
 
+        /// <summary>
+        /// Guardar cambios en la base de datos
+        /// </summary>
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;

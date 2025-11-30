@@ -1,8 +1,7 @@
 using Domain.Entities;
-using Domain.Interfaces.Repositories.Finanzas;
-using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Domain.Interfaces.Repositories.Finance;
 
 namespace Infrastructure.Repositories
 {
@@ -21,8 +20,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<GeneralExpense>> GetExpensesByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.GeneralExpenses
+            return await _dbSet
                 .Where(e => e.Date >= startDate && e.Date <= endDate)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -31,8 +31,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<GeneralExpense>> GetByReportIdAsync(Guid reportId)
         {
-            return await _context.GeneralExpenses
+            return await _dbSet
                 .Where(e => e.ReportId == reportId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -41,8 +42,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<GeneralExpense>> GetByModuleAsync(Guid moduleId)
         {
-            return await _context.GeneralExpenses
+            return await _dbSet
                 .Where(e => e.ModuleId == moduleId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -51,16 +53,22 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<decimal> GetTotalAmountByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.GeneralExpenses
+            return await _dbSet
                 .Where(e => e.Date >= startDate && e.Date <= endDate)
                 .SumAsync(e => e.Amount);
         }
 
-        public void Delete(GeneralExpense entity)
+        /// <summary>
+        /// Eliminar gasto
+        /// </summary>
+        public void DeleteExpense(GeneralExpense entity)
         {
-            _context.GeneralExpenses.Remove(entity);
+            Remove(entity);
         }
 
+        /// <summary>
+        /// Guardar cambios en la base de datos
+        /// </summary>
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;

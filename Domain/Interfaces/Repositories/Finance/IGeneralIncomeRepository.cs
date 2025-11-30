@@ -1,17 +1,17 @@
 using Domain.Entities;
 
-namespace Domain.Interfaces.Repositories.Finanzas
+namespace Domain.Interfaces.Repositories.Finance
 {
-    public interface IGeneralIncomeRepository
+    /// <summary>
+    /// Repositorio específico para GeneralIncome
+    /// Hereda de IRepository para operaciones genéricas
+    /// </summary>
+    public interface IGeneralIncomeRepository : IRepository<GeneralIncome>
     {
+        // Métodos específicos del repositorio
         Task<IEnumerable<GeneralIncome>> GetIncomesByPeriodAsync(DateTime startDate, DateTime endDate);
         Task<IEnumerable<GeneralIncome>> GetByReportIdAsync(Guid reportId);
         Task<IEnumerable<GeneralIncome>> GetByModuleAsync(Guid moduleId);
         Task<decimal> GetTotalAmountByPeriodAsync(DateTime startDate, DateTime endDate);
-
-        Task AddAsync(GeneralIncome entity);
-        void Update(GeneralIncome entity);
-        void Delete(GeneralIncome entity);
-        Task<bool> SaveChangesAsync();
     }
 }

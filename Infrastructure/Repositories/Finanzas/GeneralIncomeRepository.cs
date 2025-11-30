@@ -1,8 +1,7 @@
 using Domain.Entities;
-using Domain.Interfaces.Repositories.Finanzas;
-using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Domain.Interfaces.Repositories.Finance;
 
 namespace Infrastructure.Repositories
 {
@@ -20,8 +19,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<GeneralIncome>> GetIncomesByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.GeneralIncomes
+            return await _dbSet
                 .Where(i => i.Date >= startDate && i.Date <= endDate)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -30,8 +30,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<GeneralIncome>> GetByReportIdAsync(Guid reportId)
         {
-            return await _context.GeneralIncomes
+            return await _dbSet
                 .Where(i => i.ReportId == reportId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -40,8 +41,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<GeneralIncome>> GetByModuleAsync(Guid moduleId)
         {
-            return await _context.GeneralIncomes
+            return await _dbSet
                 .Where(i => i.ModuleId == moduleId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -50,21 +52,25 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<decimal> GetTotalAmountByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.GeneralIncomes
+            return await _dbSet
                 .Where(i => i.Date >= startDate && i.Date <= endDate)
                 .SumAsync(i => i.Amount);
         }
 
-        // Implement interface contract helpers
-        public void Delete(GeneralIncome entity)
+        /// <summary>
+        /// Eliminar ingreso
+        /// </summary>
+        public void DeleteIncome(GeneralIncome entity)
         {
-            _context.GeneralIncomes.Remove(entity);
+            Remove(entity);
         }
 
+        /// <summary>
+        /// Guardar cambios en la base de datos
+        /// </summary>
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;
         }
     }
-
 }

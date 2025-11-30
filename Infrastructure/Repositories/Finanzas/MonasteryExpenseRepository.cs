@@ -1,13 +1,11 @@
 using Domain.Entities;
-using Domain.Interfaces.Repositories.Finanzas;
-using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
     public class MonasteryExpenseRepository 
-        : GenericRepository<MonasteryExpense>, IMonasteryExpenseRepository
+        : GenericRepository<MonasteryExpense>
     {
         private readonly AppDbContext _context;
 
@@ -21,8 +19,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<MonasteryExpense>> GetExpensesByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.MonasteryExpenses
+            return await _dbSet
                 .Where(e => e.Date >= startDate && e.Date <= endDate)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -31,8 +30,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<MonasteryExpense>> GetByCategoryAsync(string category)
         {
-            return await _context.MonasteryExpenses
+            return await _dbSet
                 .Where(e => e.Category == category)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -41,8 +41,9 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<IEnumerable<MonasteryExpense>> GetByOverheadIdAsync(Guid overheadId)
         {
-            return await _context.MonasteryExpenses
+            return await _dbSet
                 .Where(e => e.OverheadsId == overheadId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -51,16 +52,22 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<double> GetTotalAmountByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.MonasteryExpenses
+            return await _dbSet
                 .Where(e => e.Date >= startDate && e.Date <= endDate)
                 .SumAsync(e => e.Amount);
         }
 
-        public void Delete(MonasteryExpense entity)
+        /// <summary>
+        /// Eliminar gasto
+        /// </summary>
+        public void DeleteExpense(MonasteryExpense entity)
         {
-            _context.MonasteryExpenses.Remove(entity);
+            Remove(entity);
         }
 
+        /// <summary>
+        /// Guardar cambios en la base de datos
+        /// </summary>
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;

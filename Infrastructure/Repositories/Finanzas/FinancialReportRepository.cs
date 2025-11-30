@@ -1,8 +1,7 @@
 using Domain.Entities;
-using Domain.Interfaces.Repositories.Finanzas;
-using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Domain.Interfaces.Repositories.Finance;
 
 namespace Infrastructure.Repositories
 {
@@ -21,12 +20,10 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<FinancialReport?> GetReportByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.FinancialReports
+            return await _dbSet
                 .Include(r => r.GeneralIncomes)
                 .Include(r => r.GeneralExpenses)
-                .FirstOrDefaultAsync(r =>
-                    r.StartDate >= startDate &&
-                    r.EndDate <= endDate);
+                .FirstOrDefaultAsync(r => r.StartDate >= startDate && r.EndDate <= endDate);
         }
 
         /// <summary>
@@ -34,8 +31,7 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task<bool> ExistsInPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.FinancialReports
-                .AnyAsync(r => r.StartDate == startDate && r.EndDate == endDate);
+            return await AnyAsync(r => r.StartDate == startDate && r.EndDate == endDate);
         }
 
         /// <summary>
@@ -45,6 +41,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.GeneralIncomes
                 .Where(g => g.ReportId == reportId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -55,6 +52,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.GeneralExpenses
                 .Where(e => e.ReportId == reportId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -63,26 +61,30 @@ namespace Infrastructure.Repositories
         /// </summary>
         public async Task UpdateTotalsAsync(Guid reportId, decimal income, decimal expense, decimal netProfit)
         {
-            var report = await _context.FinancialReports.FindAsync(reportId);
+            var report = await GetByIdAsync(reportId);
 
-            if (report == null)
-                return;
+            if (report == null) return;
 
             report.TotalIncome = income;
             report.TotalExpenses = expense;
             report.NetProfit = netProfit;
             report.UpdatedAt = DateTime.UtcNow;
 
-            // Se puede usar base.Update si lo quieres pasar al GenericRepository
-            _context.FinancialReports.Update(report);
+            Update(report);
             await _context.SaveChangesAsync();
         }
 
-        public void Delete(FinancialReport entity)
+        /// <summary>
+        /// Eliminar reporte financiero
+        /// </summary>
+        public void DeleteReport(FinancialReport entity)
         {
-            _context.FinancialReports.Remove(entity);
+            Remove(entity);
         }
 
+        /// <summary>
+        /// Guardar cambios en la base de datos
+        /// </summary>
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;

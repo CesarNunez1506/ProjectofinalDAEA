@@ -31,9 +31,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configurar LocalDbContext para módulo de producción
-builder.Services.AddDbContext<LocalDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Nota: ya no usamos LocalDbContext — solo AppDbContext está en uso
 
 // Agregar MediatR para CQRS
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.DTOs.Finance.ExpenseDto).Assembly));
@@ -139,10 +137,10 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ======= FINANZAS - Repositorios =======
 //builder.Services.AddScoped(typeof(Domain.Interfaces.Repositories.IGenericRepository<>), typeof(Infrastructure.Repositories.GenericRepository<>));
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finanzas.IGeneralIncomeRepository, Infrastructure.Repositories.GeneralIncomeRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finanzas.IGeneralExpenseRepository, Infrastructure.Repositories.GeneralExpenseRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.IOverheadRepository, Infrastructure.Repositories.OverheadRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finanzas.IFinancialReportRepository, Infrastructure.Repositories.FinancialReportRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IGeneralIncomeRepository, Infrastructure.Repositories.GeneralIncomeRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IGeneralExpenseRepository, Infrastructure.Repositories.GeneralExpenseRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IOverheadRepository, Infrastructure.Repositories.OverheadRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IFinancialReportRepository, Infrastructure.Repositories.FinancialReportRepository>();
 
 // Registrar UnitOfWork para que los casos de uso puedan inyectarlo
 builder.Services.AddScoped<Domain.Interfaces.Services.IUnitOfWork, Infrastructure.Services.UnitOfWork>();
