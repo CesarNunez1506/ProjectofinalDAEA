@@ -1,5 +1,6 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -18,7 +19,8 @@ public class AdjustProductStockCommandHandler : IRequestHandler<AdjustProductSto
 
     public async Task<bool> Handle(AdjustProductStockCommand request, CancellationToken cancellationToken)
     {
-        var warehouseProduct = await _unitOfWork.WarehouseProducts.FindOneAsync(
+        var warehouseProductRepo = _unitOfWork.GetRepository<WarehouseProduct>();
+        var warehouseProduct = await warehouseProductRepo.FirstOrDefaultAsync(
             wp => wp.WarehouseId == request.Dto.WarehouseId && wp.ProductId == request.Dto.ProductId);
 
         if (warehouseProduct == null)
@@ -29,7 +31,7 @@ public class AdjustProductStockCommandHandler : IRequestHandler<AdjustProductSto
         warehouseProduct.Quantity = request.Dto.Quantity;
         warehouseProduct.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.WarehouseProducts.UpdateAsync(warehouseProduct);
+        warehouseProductRepo.Update(warehouseProduct);
         await _unitOfWork.SaveChangesAsync();
 
         return true;

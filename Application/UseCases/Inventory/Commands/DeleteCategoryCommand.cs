@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -16,7 +17,8 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 
     public async Task<bool> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.Categories.FindOneAsync(c => c.Id == request.CategoryId);
+        var categoryRepo = _unitOfWork.GetRepository<Category>();
+        var category = await categoryRepo.FirstOrDefaultAsync(c => c.Id == request.CategoryId);
         if (category == null)
         {
             throw new Exception($"Category with ID {request.CategoryId} not found");
@@ -25,7 +27,7 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         category.Status = false;
         category.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.Categories.UpdateAsync(category);
+        categoryRepo.Update(category);
         await _unitOfWork.SaveChangesAsync();
 
         return true;

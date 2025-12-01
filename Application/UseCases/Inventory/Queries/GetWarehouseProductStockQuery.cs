@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -16,7 +17,8 @@ public class GetWarehouseProductStockQueryHandler : IRequestHandler<GetWarehouse
 
     public async Task<int> Handle(GetWarehouseProductStockQuery request, CancellationToken cancellationToken)
     {
-        var stock = await _unitOfWork.Warehouses.GetProductStockAsync(request.WarehouseId, request.ProductId);
+        var warehouseRepo = _unitOfWork.GetRepository<Warehouse>();
+        var stock = await warehouseRepo.GetProductStockAsync(request.WarehouseId, request.ProductId);
         return stock;
     }
 }

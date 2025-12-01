@@ -4,7 +4,6 @@ using Domain.Interfaces.Repositories.Users;
 using Domain.Interfaces.Services.Production;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Services.Users;
-using Infrastructure.Repositories.Production;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Services.Production;
@@ -15,6 +14,7 @@ using Application.UseCases.Production.Products;
 using Application.UseCases.Production.Recipes;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
+using Application.UseCases.Production.PlantProductions;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,6 +28,10 @@ using Proyecto_Final.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configurar DbContext (ya existente en el proyecto)
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configurar LocalDbContext para módulo de producción
 builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -137,13 +141,9 @@ builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ========== REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN ==========
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
-builder.Services.AddScoped<IPlantProductionRepository, PlantProductionRepository>();
-builder.Services.AddScoped<IProductionRepository, ProductionRepository>();
-builder.Services.AddScoped<ILostRepository, LostRepository>();
-builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+// Los repositorios específicos (Category, Product, Recipe, Production, Lost, PlantProduction) han sido reemplazados por el repositorio genérico
+// Solo se mantienen repositorios con lógica especial que no puede ser manejada genéricamente
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>(); // Mantener - tiene lógica compleja FIFO
 
 // ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
 builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
@@ -198,6 +198,13 @@ builder.Services.AddScoped<GetAllLostsUseCase>();
 builder.Services.AddScoped<GetLostByIdUseCase>();
 builder.Services.AddScoped<UpdateLostUseCase>();
 builder.Services.AddScoped<DeleteLostUseCase>();
+
+// ========== CASOS DE USO - PLANTAS DE PRODUCCIÓN ==========
+builder.Services.AddScoped<CreatePlantProductionUseCase>();
+builder.Services.AddScoped<GetAllPlantProductionsUseCase>();
+builder.Services.AddScoped<GetPlantProductionByIdUseCase>();
+builder.Services.AddScoped<UpdatePlantProductionUseCase>();
+builder.Services.AddScoped<DeletePlantProductionUseCase>();
 
 var app = builder.Build();
 

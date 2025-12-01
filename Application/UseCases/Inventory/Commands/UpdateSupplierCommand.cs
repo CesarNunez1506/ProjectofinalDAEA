@@ -1,6 +1,7 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -21,7 +22,8 @@ public class UpdateSupplierCommandHandler : IRequestHandler<UpdateSupplierComman
 
     public async Task<SupplierDto> Handle(UpdateSupplierCommand request, CancellationToken cancellationToken)
     {
-        var supplier = await _unitOfWork.Suppliers.FindOneAsync(s => s.Id == request.Dto.Id);
+        var supplierRepo = _unitOfWork.GetRepository<Supplier>();
+        var supplier = await supplierRepo.FirstOrDefaultAsync(s => s.Id == request.Dto.Id);
         if (supplier == null)
         {
             throw new Exception($"Supplier with ID {request.Dto.Id} not found");
@@ -36,7 +38,7 @@ public class UpdateSupplierCommandHandler : IRequestHandler<UpdateSupplierComman
         supplier.Status = request.Dto.Status;
         supplier.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.Suppliers.UpdateAsync(supplier);
+        supplierRepo.Update(supplier);
         await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<SupplierDto>(supplier);

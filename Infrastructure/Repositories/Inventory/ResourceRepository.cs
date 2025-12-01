@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories.Inventory;
 
 public class ResourceRepository : GenericRepository<Resource>, IResourceRepository
 {
-    public ResourceRepository(LocalDbContext context) : base(context)
+    public ResourceRepository(AppDbContext context) : base(context)
     {
     }
 

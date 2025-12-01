@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -16,7 +17,8 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
 
     public async Task<bool> Handle(DeleteWarehouseCommand request, CancellationToken cancellationToken)
     {
-        var warehouse = await _unitOfWork.Warehouses.FindOneAsync(w => w.Id == request.WarehouseId);
+        var warehouseRepo = _unitOfWork.GetRepository<Warehouse>();
+        var warehouse = await warehouseRepo.FirstOrDefaultAsync(w => w.Id == request.WarehouseId);
         if (warehouse == null)
         {
             throw new Exception($"Warehouse with ID {request.WarehouseId} not found");
@@ -25,7 +27,7 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
         warehouse.Status = false;
         warehouse.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.Warehouses.UpdateAsync(warehouse);
+        warehouseRepo.Update(warehouse);
         await _unitOfWork.SaveChangesAsync();
 
         return true;

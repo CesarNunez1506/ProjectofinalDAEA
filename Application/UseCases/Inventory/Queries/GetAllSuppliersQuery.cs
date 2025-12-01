@@ -1,6 +1,7 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -21,7 +22,8 @@ public class GetAllSuppliersQueryHandler : IRequestHandler<GetAllSuppliersQuery,
 
     public async Task<IEnumerable<SupplierDto>> Handle(GetAllSuppliersQuery request, CancellationToken cancellationToken)
     {
-        var suppliers = await _unitOfWork.Suppliers.GetAllAsync();
+        var supplierRepo = _unitOfWork.GetRepository<Supplier>();
+        var suppliers = await supplierRepo.GetAllAsync();
         return _mapper.Map<IEnumerable<SupplierDto>>(suppliers);
     }
 }

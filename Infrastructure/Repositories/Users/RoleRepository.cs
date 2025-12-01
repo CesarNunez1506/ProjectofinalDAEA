@@ -9,7 +9,7 @@ public class RoleRepository : IRoleRepository
 {
     private readonly LocalDbContext _context;
 
-    public RoleRepository(LocalDbContext context)
+    public RoleRepository(AppDbContext context)
     {
         _context = context;
     }

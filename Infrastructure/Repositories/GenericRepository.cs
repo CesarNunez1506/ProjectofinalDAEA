@@ -6,93 +6,108 @@ using System.Linq.Expressions;
 namespace Infrastructure.Repositories;
 
 /// <summary>
-/// Implementación genérica del repositorio base
-/// Proporciona operaciones CRUD comunes para todas las entidades
-/// Usa Expression<Func<T, bool>> para consultas flexibles (Recomendación 3 del profesor)
+/// Implementación del repositorio genérico usando EF Core
 /// </summary>
 public class GenericRepository<T> : IRepository<T> where T : class
 {
-    protected readonly LocalDbContext _context;
+    protected readonly AppDbContext _context;
     protected readonly DbSet<T> _dbSet;
 
-    public GenericRepository(LocalDbContext context)
+    public GenericRepository(AppDbContext context)
     {
         _context = context;
-        _dbSet = context.Set<T>();
+        _dbSet = _context.Set<T>();
     }
 
-    public virtual async Task<T?> GetByIdAsync(int id)
+    public virtual async Task<T?> GetByIdAsync(Guid id)
     {
         return await _dbSet.FindAsync(id);
     }
 
+    public virtual async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _dbSet.AsNoTracking().FirstOrDefaultAsync(predicate);
+    }
+
     public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet.AsNoTracking().ToListAsync();
     }
 
-    /// <summary>
-    /// Buscar entidades usando expresiones lambda (Recomendación del profesor)
-    /// Ejemplo: FindAsync(p => p.CategoryId == 5)
-    /// </summary>
     public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
     {
-        return await _dbSet.Where(predicate).ToListAsync();
+        return await _dbSet.Where(predicate).AsNoTracking().ToListAsync();
     }
 
-    /// <summary>
-    /// Buscar una sola entidad con expresión
-    /// </summary>
-    public virtual async Task<T?> FindOneAsync(Expression<Func<T, bool>> predicate)
+    public virtual async Task<IEnumerable<T>> GetAsync(
+        Expression<Func<T, bool>>? filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        string includeProperties = "",
+        int? skip = null,
+        int? take = null)
     {
-        return await _dbSet.FirstOrDefaultAsync(predicate);
+        IQueryable<T> query = _dbSet;
+
+        if (filter != null)
+            query = query.Where(filter);
+
+        // Incluir propiedades de navegación
+        foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            query = query.Include(includeProperty.Trim());
+        }
+
+        if (orderBy != null)
+            query = orderBy(query);
+
+        if (skip.HasValue)
+            query = query.Skip(skip.Value);
+
+        if (take.HasValue)
+            query = query.Take(take.Value);
+
+        return await query.AsNoTracking().ToListAsync();
     }
 
-    public virtual async Task<T> AddAsync(T entity)
+    public virtual async Task AddAsync(T entity)
     {
         await _dbSet.AddAsync(entity);
-        return entity;
     }
 
-    public virtual async Task UpdateAsync(T entity)
+    public virtual async Task AddRangeAsync(IEnumerable<T> entities)
+    {
+        await _dbSet.AddRangeAsync(entities);
+    }
+
+    public virtual void Update(T entity)
     {
         _dbSet.Update(entity);
-        await Task.CompletedTask;
     }
 
-    public virtual async Task DeleteAsync(int id)
+    public virtual void UpdateRange(IEnumerable<T> entities)
     {
-        var entity = await GetByIdAsync(id);
-        if (entity != null)
-        {
-            _dbSet.Remove(entity);
-        }
+        _dbSet.UpdateRange(entities);
     }
 
-    public virtual async Task DeleteAsync(T entity)
+    public virtual void Remove(T entity)
     {
         _dbSet.Remove(entity);
-        await Task.CompletedTask;
     }
 
-    public virtual async Task<bool> ExistsAsync(int id)
+    public virtual void RemoveRange(IEnumerable<T> entities)
     {
-        var entity = await GetByIdAsync(id);
-        return entity != null;
+        _dbSet.RemoveRange(entities);
     }
 
-    public virtual async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+    public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
     {
         return await _dbSet.AnyAsync(predicate);
     }
 
-    public virtual async Task<int> CountAsync()
+    public virtual async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)
     {
-        return await _dbSet.CountAsync();
-    }
-
-    public virtual async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
-    {
+        if (predicate == null)
+            return await _dbSet.CountAsync();
         return await _dbSet.CountAsync(predicate);
     }
 }

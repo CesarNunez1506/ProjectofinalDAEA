@@ -25,7 +25,8 @@ public class CreateSupplierCommandHandler : IRequestHandler<CreateSupplierComman
     public async Task<SupplierDto> Handle(CreateSupplierCommand request, CancellationToken cancellationToken)
     {
         // Validar que no exista un proveedor con el mismo RUC
-        var exists = await _unitOfWork.Suppliers.ExistsAsync(s => s.Ruc == request.Dto.Ruc);
+        var supplierRepo = _unitOfWork.GetRepository<Supplier>();
+        var exists = await supplierRepo.ExistsAsync(s => s.Ruc == request.Dto.Ruc);
         if (exists)
         {
             throw new DuplicateSupplierException(request.Dto.Ruc);
@@ -37,7 +38,7 @@ public class CreateSupplierCommandHandler : IRequestHandler<CreateSupplierComman
         supplier.CreatedAt = DateTime.UtcNow;
         supplier.UpdatedAt = DateTime.UtcNow;
 
-        var createdSupplier = await _unitOfWork.Suppliers.AddAsync(supplier);
+        var createdSupplier = await supplierRepo.AddAsync(supplier);
         await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<SupplierDto>(createdSupplier);

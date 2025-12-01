@@ -9,7 +9,7 @@ public class PermissionRepository : IPermissionRepository
 {
     private readonly LocalDbContext _context;
 
-    public PermissionRepository(LocalDbContext context)
+    public PermissionRepository(AppDbContext context)
     {
         _context = context;
     }

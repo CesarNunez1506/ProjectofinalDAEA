@@ -1,5 +1,6 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -18,7 +19,8 @@ public class TransferProductBetweenWarehousesCommandHandler : IRequestHandler<Tr
 
     public async Task<bool> Handle(TransferProductBetweenWarehousesCommand request, CancellationToken cancellationToken)
     {
-        var sourceWarehouseProduct = await _unitOfWork.WarehouseProducts.FindOneAsync(
+        var warehouseProductRepo = _unitOfWork.GetRepository<WarehouseProduct>();
+        var sourceWarehouseProduct = await warehouseProductRepo.FirstOrDefaultAsync(
             wp => wp.WarehouseId == request.Dto.SourceWarehouseId && wp.ProductId == request.Dto.ProductId);
 
         if (sourceWarehouseProduct == null || sourceWarehouseProduct.Quantity < request.Dto.Quantity)
@@ -28,20 +30,20 @@ public class TransferProductBetweenWarehousesCommandHandler : IRequestHandler<Tr
 
         sourceWarehouseProduct.Quantity -= request.Dto.Quantity;
         sourceWarehouseProduct.UpdatedAt = DateTime.UtcNow;
-        await _unitOfWork.WarehouseProducts.UpdateAsync(sourceWarehouseProduct);
+        warehouseProductRepo.Update(sourceWarehouseProduct);
 
-        var destinationWarehouseProduct = await _unitOfWork.WarehouseProducts.FindOneAsync(
+        var destinationWarehouseProduct = await warehouseProductRepo.FirstOrDefaultAsync(
             wp => wp.WarehouseId == request.Dto.DestinationWarehouseId && wp.ProductId == request.Dto.ProductId);
 
         if (destinationWarehouseProduct != null)
         {
             destinationWarehouseProduct.Quantity += request.Dto.Quantity;
             destinationWarehouseProduct.UpdatedAt = DateTime.UtcNow;
-            await _unitOfWork.WarehouseProducts.UpdateAsync(destinationWarehouseProduct);
+            warehouseProductRepo.Update(destinationWarehouseProduct);
         }
         else
         {
-            var newWarehouseProduct = new Domain.Entities.WarehouseProduct
+            var newWarehouseProduct = new WarehouseProduct
             {
                 Id = Guid.NewGuid(),
                 WarehouseId = request.Dto.DestinationWarehouseId,
@@ -51,7 +53,7 @@ public class TransferProductBetweenWarehousesCommandHandler : IRequestHandler<Tr
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
-            await _unitOfWork.WarehouseProducts.AddAsync(newWarehouseProduct);
+            await warehouseProductRepo.AddAsync(newWarehouseProduct);
         }
 
         await _unitOfWork.SaveChangesAsync();

@@ -38,13 +38,13 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserD
         }
 
         // Validar que el email no esté en uso por otro usuario
-        if (await _userRepository.ExistsByEmailAsync(request.Dto.Email, request.Id))
+        if (!string.IsNullOrEmpty(request.Dto.Email) && await _userRepository.ExistsByEmailAsync(request.Dto.Email, request.Id))
         {
             throw new InvalidOperationException("El email ya está en uso");
         }
 
         // Validar que el DNI no esté en uso por otro usuario
-        if (await _userRepository.ExistsByDniAsync(request.Dto.Dni, request.Id))
+        if (!string.IsNullOrEmpty(request.Dto.Dni) && await _userRepository.ExistsByDniAsync(request.Dto.Dni, request.Id))
         {
             throw new InvalidOperationException("El DNI ya está en uso");
         }

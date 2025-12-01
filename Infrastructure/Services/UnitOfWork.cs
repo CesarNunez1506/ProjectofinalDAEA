@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 using Domain.Interfaces.Repositories.Inventory;
 using Domain.Interfaces.Services;
 using Infrastructure.Data;
 using Infrastructure.Repositories.Inventory;
+=======
+using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
+>>>>>>> origin/main
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Services;
@@ -11,9 +18,11 @@ namespace Infrastructure.Services;
 /// </summary>
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
     private IDbContextTransaction? _transaction;
+    private readonly Dictionary<Type, object> _repositories = new();
 
+<<<<<<< HEAD
     // Repositorios de Inventario (lazy initialization)
     private IProductRepository? _products;
     private ICategoryRepository? _categories;
@@ -27,6 +36,9 @@ public class UnitOfWork : IUnitOfWork
     private IWarehouseMovementResourceRepository? _warehouseMovementResources;
 
     public UnitOfWork(LocalDbContext context)
+=======
+    public UnitOfWork(AppDbContext context)
+>>>>>>> origin/main
     {
         _context = context;
     }
@@ -99,8 +111,22 @@ public class UnitOfWork : IUnitOfWork
         return await _context.SaveChangesAsync();
     }
 
+    public IRepository<T> GetRepository<T>() where T : class
+    {
+        var type = typeof(T);
+        
+        if (!_repositories.ContainsKey(type))
+        {
+            var repositoryInstance = new GenericRepository<T>(_context);
+            _repositories[type] = repositoryInstance;
+        }
+        
+        return (IRepository<T>)_repositories[type];
+    }
+
     public void Dispose()
     {
         _transaction?.Dispose();
+        _context?.Dispose();
     }
 }

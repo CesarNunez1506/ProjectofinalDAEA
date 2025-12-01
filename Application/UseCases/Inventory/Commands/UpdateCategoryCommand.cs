@@ -1,5 +1,6 @@
 using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -20,7 +21,8 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 
     public async Task<CategoryDto> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.Categories.FindOneAsync(c => c.Id == request.Dto.Id);
+        var categoryRepo = _unitOfWork.GetRepository<Category>();
+        var category = await categoryRepo.FirstOrDefaultAsync(c => c.Id == request.Dto.Id);
         if (category == null)
         {
             throw new Exception($"Category with ID {request.Dto.Id} not found");
@@ -31,7 +33,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         category.Status = request.Dto.Status;
         category.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.Categories.UpdateAsync(category);
+        categoryRepo.Update(category);
         await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<CategoryDto>(category);

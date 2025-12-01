@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Domain.Exceptions.Inventory;
 using Domain.Interfaces.Services;
 using MediatR;
@@ -23,7 +24,8 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
 
     public async Task<bool> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await _unitOfWork.Products.FindOneAsync(p => p.Id == request.ProductId);
+        var productRepo = _unitOfWork.GetRepository<Product>();
+        var product = await productRepo.FirstOrDefaultAsync(p => p.Id == request.ProductId);
         if (product == null)
         {
             throw new ProductNotFoundException(request.ProductId);
@@ -33,7 +35,7 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
         product.Status = false;
         product.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.Products.UpdateAsync(product);
+        productRepo.Update(product);
         await _unitOfWork.SaveChangesAsync();
 
         return true;

@@ -1,6 +1,7 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -21,7 +22,8 @@ public class GetProducibleProductsQueryHandler : IRequestHandler<GetProduciblePr
 
     public async Task<IEnumerable<ProductDto>> Handle(GetProducibleProductsQuery request, CancellationToken cancellationToken)
     {
-        var products = await _unitOfWork.Products.FindAsync(p => p.Producible == true && p.Status == true);
+        var productRepo = _unitOfWork.GetRepository<Product>();
+        var products = await productRepo.FindAsync(p => p.Producible == true && p.Status == true);
         return _mapper.Map<IEnumerable<ProductDto>>(products);
     }
 }

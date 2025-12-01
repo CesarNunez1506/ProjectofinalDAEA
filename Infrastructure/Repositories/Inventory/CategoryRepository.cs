@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories.Inventory;
 
 public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
 {
-    public CategoryRepository(LocalDbContext context) : base(context)
+    public CategoryRepository(AppDbContext context) : base(context)
     {
     }
 

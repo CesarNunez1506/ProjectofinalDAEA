@@ -28,7 +28,8 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
         warehouse.CreatedAt = DateTime.UtcNow;
         warehouse.UpdatedAt = DateTime.UtcNow;
 
-        var createdWarehouse = await _unitOfWork.Warehouses.AddAsync(warehouse);
+        var warehouseRepo = _unitOfWork.GetRepository<Warehouse>();
+        var createdWarehouse = await warehouseRepo.AddAsync(warehouse);
         await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<WarehouseDto>(createdWarehouse);

@@ -1,6 +1,7 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -21,7 +22,8 @@ public class GetWarehouseStockQueryHandler : IRequestHandler<GetWarehouseStockQu
 
     public async Task<IEnumerable<WarehouseProductDto>> Handle(GetWarehouseStockQuery request, CancellationToken cancellationToken)
     {
-        var warehouseProducts = await _unitOfWork.WarehouseProducts.FindAsync(
+        var warehouseProductRepo = _unitOfWork.GetRepository<WarehouseProduct>();
+        var warehouseProducts = await warehouseProductRepo.FindAsync(
             wp => wp.WarehouseId == request.WarehouseId && wp.Status == true);
         return _mapper.Map<IEnumerable<WarehouseProductDto>>(warehouseProducts);
     }

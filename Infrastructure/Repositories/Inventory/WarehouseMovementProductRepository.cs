@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories.Inventory;
 
 public class WarehouseMovementProductRepository : GenericRepository<WarehouseMovementProduct>, IWarehouseMovementProductRepository
 {
-    public WarehouseMovementProductRepository(LocalDbContext context) : base(context)
+    public WarehouseMovementProductRepository(AppDbContext context) : base(context)
     {
     }
 

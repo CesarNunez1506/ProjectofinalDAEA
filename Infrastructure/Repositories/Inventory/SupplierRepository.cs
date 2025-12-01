@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories.Inventory;
 
 public class SupplierRepository : GenericRepository<Supplier>, ISupplierRepository
 {
-    public SupplierRepository(LocalDbContext context) : base(context)
+    public SupplierRepository(AppDbContext context) : base(context)
     {
     }
 

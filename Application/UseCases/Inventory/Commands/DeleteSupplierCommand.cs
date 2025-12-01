@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -16,7 +17,8 @@ public class DeleteSupplierCommandHandler : IRequestHandler<DeleteSupplierComman
 
     public async Task<bool> Handle(DeleteSupplierCommand request, CancellationToken cancellationToken)
     {
-        var supplier = await _unitOfWork.Suppliers.FindOneAsync(s => s.Id == request.SupplierId);
+        var supplierRepo = _unitOfWork.GetRepository<Supplier>();
+        var supplier = await supplierRepo.FirstOrDefaultAsync(s => s.Id == request.SupplierId);
         if (supplier == null)
         {
             throw new Exception($"Supplier with ID {request.SupplierId} not found");
@@ -25,7 +27,7 @@ public class DeleteSupplierCommandHandler : IRequestHandler<DeleteSupplierComman
         supplier.Status = false;
         supplier.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.Suppliers.UpdateAsync(supplier);
+        supplierRepo.Update(supplier);
         await _unitOfWork.SaveChangesAsync();
 
         return true;

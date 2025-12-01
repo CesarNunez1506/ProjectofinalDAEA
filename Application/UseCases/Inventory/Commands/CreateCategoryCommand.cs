@@ -27,9 +27,10 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         category.CreatedAt = DateTime.UtcNow;
         category.UpdatedAt = DateTime.UtcNow;
 
-        var createdCategory = await _unitOfWork.Categories.AddAsync(category);
+        var categoryRepo = _unitOfWork.GetRepository<Category>();
+        await categoryRepo.AddAsync(category);
         await _unitOfWork.SaveChangesAsync();
 
-        return _mapper.Map<CategoryDto>(createdCategory);
+        return _mapper.Map<CategoryDto>(category);
     }
 }

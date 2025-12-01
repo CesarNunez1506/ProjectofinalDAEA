@@ -15,7 +15,7 @@ public partial class MonasteryExpense
 
     public DateTime Date { get; set; }
 
-    public string Descripción { get; set; } = null!;
+    public string Descripcion { get; set; } = null!;
 
     public Guid? OverheadsId { get; set; }
 

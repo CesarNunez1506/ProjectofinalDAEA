@@ -29,7 +29,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
     public async Task<ProductDto> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         // Validar que el producto exista
-        var product = await _unitOfWork.Products.FindOneAsync(p => p.Id == request.Dto.Id);
+        var productRepo = _unitOfWork.GetRepository<Product>();
+        var product = await productRepo.FirstOrDefaultAsync(p => p.Id == request.Dto.Id);
         if (product == null)
         {
             throw new ProductNotFoundException(request.Dto.Id);
@@ -38,7 +39,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         // Validar que la categoría exista (si se proporciona)
         if (request.Dto.CategoryId.HasValue)
         {
-            var categoryExists = await _unitOfWork.Categories.ExistsAsync(c => c.Id == request.Dto.CategoryId.Value);
+            var categoryRepo = _unitOfWork.GetRepository<Category>();
+            var categoryExists = await categoryRepo.ExistsAsync(c => c.Id == request.Dto.CategoryId.Value);
             if (!categoryExists)
             {
                 throw new CategoryNotFoundException(request.Dto.CategoryId.Value);
@@ -55,7 +57,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         if (request.Dto.Producible.HasValue) product.Producible = request.Dto.Producible.Value;
         product.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.Products.UpdateAsync(product);
+        productRepo.Update(product);
         await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<ProductDto>(product);

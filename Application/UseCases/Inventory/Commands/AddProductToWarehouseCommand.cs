@@ -19,26 +19,29 @@ public class AddProductToWarehouseCommandHandler : IRequestHandler<AddProductToW
 
     public async Task<bool> Handle(AddProductToWarehouseCommand request, CancellationToken cancellationToken)
     {
-        var warehouse = await _unitOfWork.Warehouses.FindOneAsync(w => w.Id == request.Dto.WarehouseId);
+        var warehouseRepo = _unitOfWork.GetRepository<Warehouse>();
+        var warehouse = await warehouseRepo.FirstOrDefaultAsync(w => w.Id == request.Dto.WarehouseId);
         if (warehouse == null)
         {
             throw new Exception($"Warehouse with ID {request.Dto.WarehouseId} not found");
         }
 
-        var product = await _unitOfWork.Products.FindOneAsync(p => p.Id == request.Dto.ProductId);
+        var productRepo = _unitOfWork.GetRepository<Product>();
+        var product = await productRepo.FirstOrDefaultAsync(p => p.Id == request.Dto.ProductId);
         if (product == null)
         {
             throw new Exception($"Product with ID {request.Dto.ProductId} not found");
         }
 
-        var warehouseProduct = await _unitOfWork.WarehouseProducts.FindOneAsync(
+        var warehouseProductRepo = _unitOfWork.GetRepository<WarehouseProduct>();
+        var warehouseProduct = await warehouseProductRepo.FirstOrDefaultAsync(
             wp => wp.WarehouseId == request.Dto.WarehouseId && wp.ProductId == request.Dto.ProductId);
 
         if (warehouseProduct != null)
         {
             warehouseProduct.Quantity += request.Dto.Quantity;
             warehouseProduct.UpdatedAt = DateTime.UtcNow;
-            await _unitOfWork.WarehouseProducts.UpdateAsync(warehouseProduct);
+            warehouseProductRepo.Update(warehouseProduct);
         }
         else
         {
@@ -52,7 +55,7 @@ public class AddProductToWarehouseCommandHandler : IRequestHandler<AddProductToW
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
-            await _unitOfWork.WarehouseProducts.AddAsync(warehouseProduct);
+            await warehouseProductRepo.AddAsync(warehouseProduct);
         }
 
         await _unitOfWork.SaveChangesAsync();

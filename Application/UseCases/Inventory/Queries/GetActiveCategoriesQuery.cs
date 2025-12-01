@@ -1,6 +1,7 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -21,7 +22,8 @@ public class GetActiveCategoriesQueryHandler : IRequestHandler<GetActiveCategori
 
     public async Task<IEnumerable<CategoryDto>> Handle(GetActiveCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var categories = await _unitOfWork.Categories.FindAsync(c => c.Status == true);
+        var categoryRepo = _unitOfWork.GetRepository<Category>();
+        var categories = await categoryRepo.FindAsync(c => c.Status == true);
         return _mapper.Map<IEnumerable<CategoryDto>>(categories);
     }
 }

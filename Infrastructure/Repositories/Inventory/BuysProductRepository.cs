@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories.Inventory;
 
 public class BuysProductRepository : GenericRepository<BuysProduct>, IBuysProductRepository
 {
-    public BuysProductRepository(LocalDbContext context) : base(context)
+    public BuysProductRepository(AppDbContext context) : base(context)
     {
     }
 

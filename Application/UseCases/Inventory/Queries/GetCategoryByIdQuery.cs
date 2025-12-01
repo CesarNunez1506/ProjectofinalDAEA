@@ -21,7 +21,8 @@ public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery,
 
     public async Task<CategoryDto?> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.Categories.FindOneAsync(c => c.Id == request.CategoryId);
+        var categoryRepo = _unitOfWork.GetRepository<Category>();
+        var category = await categoryRepo.FirstOrDefaultAsync(c => c.Id == request.CategoryId);
         return category == null ? null : _mapper.Map<CategoryDto>(category);
     }
 }

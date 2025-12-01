@@ -30,7 +30,8 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         // Validar que la categoría exista
-        var categoryExists = await _unitOfWork.Categories.ExistsAsync(c => c.Id == request.Dto.CategoryId);
+        var categoryRepo = _unitOfWork.GetRepository<Category>();
+        var categoryExists = await categoryRepo.ExistsAsync(c => c.Id == request.Dto.CategoryId);
         if (!categoryExists)
         {
             throw new CategoryNotFoundException(request.Dto.CategoryId);
@@ -44,7 +45,8 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         product.UpdatedAt = DateTime.UtcNow;
 
         // Guardar en el repositorio
-        var createdProduct = await _unitOfWork.Products.AddAsync(product);
+        var productRepo = _unitOfWork.GetRepository<Product>();
+        var createdProduct = await productRepo.AddAsync(product);
         await _unitOfWork.SaveChangesAsync();
 
         // Retornar DTO

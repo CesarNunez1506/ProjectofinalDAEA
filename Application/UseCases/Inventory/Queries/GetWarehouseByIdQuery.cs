@@ -1,6 +1,7 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -21,7 +22,8 @@ public class GetWarehouseByIdQueryHandler : IRequestHandler<GetWarehouseByIdQuer
 
     public async Task<WarehouseDto?> Handle(GetWarehouseByIdQuery request, CancellationToken cancellationToken)
     {
-        var warehouse = await _unitOfWork.Warehouses.FindOneAsync(w => w.Id == request.WarehouseId);
+        var warehouseRepo = _unitOfWork.GetRepository<Warehouse>();
+        var warehouse = await warehouseRepo.FirstOrDefaultAsync(w => w.Id == request.WarehouseId);
         return warehouse == null ? null : _mapper.Map<WarehouseDto>(warehouse);
     }
 }

@@ -1,6 +1,7 @@
 using Application.DTOs.Inventory;
 using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces.Services;
 using MediatR;
 
@@ -21,7 +22,8 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
 
     public async Task<WarehouseDto> Handle(UpdateWarehouseCommand request, CancellationToken cancellationToken)
     {
-        var warehouse = await _unitOfWork.Warehouses.FindOneAsync(w => w.Id == request.Dto.Id);
+        var warehouseRepo = _unitOfWork.GetRepository<Warehouse>();
+        var warehouse = await warehouseRepo.FirstOrDefaultAsync(w => w.Id == request.Dto.Id);
         if (warehouse == null)
         {
             throw new Exception($"Warehouse with ID {request.Dto.Id} not found");
@@ -34,7 +36,7 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
         warehouse.Status = request.Dto.Status;
         warehouse.UpdatedAt = DateTime.UtcNow;
 
-        await _unitOfWork.Warehouses.UpdateAsync(warehouse);
+        warehouseRepo.Update(warehouse);
         await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<WarehouseDto>(warehouse);

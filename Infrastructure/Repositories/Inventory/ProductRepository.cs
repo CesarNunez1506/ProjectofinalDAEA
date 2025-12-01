@@ -11,7 +11,7 @@ namespace Infrastructure.Repositories.Inventory;
 /// </summary>
 public class ProductRepository : GenericRepository<Product>, IProductRepository
 {
-    public ProductRepository(LocalDbContext context) : base(context)
+    public ProductRepository(AppDbContext context) : base(context)
     {
     }
 

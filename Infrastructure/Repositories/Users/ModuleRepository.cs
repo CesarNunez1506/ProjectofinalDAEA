@@ -9,7 +9,7 @@ public class ModuleRepository : IModuleRepository
 {
     private readonly LocalDbContext _context;
 
-    public ModuleRepository(LocalDbContext context)
+    public ModuleRepository(AppDbContext context)
     {
         _context = context;
     }
