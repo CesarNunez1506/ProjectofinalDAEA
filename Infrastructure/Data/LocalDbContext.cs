@@ -613,7 +613,6 @@ public partial class LocalDbContext : DbContext
                 .HasColumnName("area");
             entity.Property(e => e.CreatedAt).HasColumnName("createdAt");
             entity.Property(e => e.ImagenUrl)
-                .HasMaxLength(2048)
                 .HasColumnName("imagen_url");
             entity.Property(e => e.LocationId).HasColumnName("location_id");
             entity.Property(e => e.Name)
