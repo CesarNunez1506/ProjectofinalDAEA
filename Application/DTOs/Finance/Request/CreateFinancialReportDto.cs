@@ -1,15 +1,16 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTOs.Finance.Request
 {
     public class CreateFinancialReportDto
     {
-        public DateTime ReportDate { get; set; }
-        public decimal TotalIncome { get; set; }
-        public decimal TotalGeneralExpenses { get; set; }
-        public decimal TotalMonasteryExpenses { get; set; }
-        public decimal TotalOverheads { get; set; }
-        public decimal NetBalance { get; set; }
-        public string? Notes { get; set; }
+        [Required]
+        public DateTime StartDate { get; set; }
+
+        [Required]
+        public DateTime EndDate { get; set; }
+
+        public string? Observations { get; set; }
     }
 }

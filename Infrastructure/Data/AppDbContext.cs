@@ -613,7 +613,6 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("area");
             entity.Property(e => e.CreatedAt).HasColumnName("createdAt");
             entity.Property(e => e.ImagenUrl)
-                .HasMaxLength(2048)
                 .HasColumnName("imagen_url");
             entity.Property(e => e.LocationId).HasColumnName("location_id");
             entity.Property(e => e.Name)
@@ -765,6 +764,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.ProductId).HasColumnName("productId");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
             entity.Property(e => e.ResourceId).HasColumnName("resourceId");
+            entity.Property(e => e.Unit)
+                .HasColumnName("unit")
+                .HasColumnType("enum_recipes_unit");
             entity.Property(e => e.UpdatedAt).HasColumnName("updatedAt");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Recipes)

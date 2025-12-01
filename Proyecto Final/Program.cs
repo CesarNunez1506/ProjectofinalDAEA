@@ -15,6 +15,7 @@ using Application.UseCases.Production.Products;
 using Application.UseCases.Production.Recipes;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
+using Application.UseCases.Production.PlantProductions;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -122,82 +123,67 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ========== REPOSITORIOS DEL MÓDULO DE USUARIOS ==========
+// REPOSITORIOS DEL MÓDULO DE USUARIOS
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IModuleRepository, Infrastructure.Repositories.Modules.ModuleRepository>();
 
-// ========== SERVICIOS DEL MÓDULO DE USUARIOS ==========
+// SERVICIOS DEL MÓDULO DE USUARIOS
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
-// ========== REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN ==========
+// REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN
+// Los repositorios específicos (Category, Product, Recipe, Production, Lost, PlantProduction) han sido reemplazados por el repositorio genérico
+// Solo se mantienen repositorios con lógica especial que no puede ser manejada genéricamente
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>(); // Mantener - tiene lógica compleja FIFO
 
+// SERVICIOS DEL MÓDULO DE PRODUCCIÓN
+builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// ======= FINANZAS - Repositorios =======
-//builder.Services.AddScoped(typeof(Domain.Interfaces.Repositories.IGenericRepository<>), typeof(Infrastructure.Repositories.GenericRepository<>));
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IGeneralIncomeRepository, Infrastructure.Repositories.GeneralIncomeRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IGeneralExpenseRepository, Infrastructure.Repositories.GeneralExpenseRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IOverheadRepository, Infrastructure.Repositories.OverheadRepository>();
-builder.Services.AddScoped<Domain.Interfaces.Repositories.Finance.IFinancialReportRepository, Infrastructure.Repositories.FinancialReportRepository>();
-
-// Registrar UnitOfWork para que los casos de uso puedan inyectarlo
-builder.Services.AddScoped<Domain.Interfaces.Services.IUnitOfWork, Infrastructure.Services.UnitOfWork>();
-
-// Servicios del módulo de Producción (utilizados por los UseCases)
-builder.Services.AddScoped<Domain.Interfaces.Services.Production.IFileStorageService, Infrastructure.Services.Production.FileStorageService>();
-builder.Services.AddScoped<Domain.Interfaces.Services.Production.IUnitConversionService, Infrastructure.Services.Production.UnitConversionService>();
-// Repositorios necesarios para casos de uso de Producción
-builder.Services.AddScoped<Domain.Interfaces.Repositories.IWarehouseRepository, Infrastructure.Repositories.WarehouseRepository>();
-
-// FINANZAS: Se eliminó el registro directo de adaptadores individuales.
-// Restaurando registro de adaptadores/handlers en la estructura Commands/Queries
-// Registrar adaptadores (Commands / Queries) para inyección en controladores
-builder.Services.AddScoped<Application.UseCases.Finance.Commands.FinancialReports.CreateIncomeCommand>();
-builder.Services.AddScoped<Application.UseCases.Finance.Commands.FinancialReports.CreateExpenseCommand>();
-builder.Services.AddScoped<Application.UseCases.Finance.Commands.FinancialReports.RecordOverheadCommand>();
-builder.Services.AddScoped<Application.UseCases.Finance.Commands.FinancialReports.GenerateFinancialReportCommand>();
-
-builder.Services.AddScoped<Application.UseCases.Finance.Queries.FinancialReports.GetIncomesByPeriodQuery>();
-builder.Services.AddScoped<Application.UseCases.Finance.Queries.FinancialReports.GetExpensesByPeriodQuery>();
-builder.Services.AddScoped<Application.UseCases.Finance.Queries.FinancialReports.GetFinancialReportByDateQuery>();
-builder.Services.AddScoped<Application.UseCases.Finance.Queries.FinancialReports.GetProfitLossStatementQuery>();
-
-// ========== CASOS DE USO - CATEGORÍAS ==========
+// CASOS DE USO - CATEGORÍAS
 builder.Services.AddScoped<CreateCategoryUseCase>();
 builder.Services.AddScoped<GetAllCategoriesUseCase>();
 builder.Services.AddScoped<GetCategoryByIdUseCase>();
 builder.Services.AddScoped<UpdateCategoryUseCase>();
 builder.Services.AddScoped<DeleteCategoryUseCase>();
 
-// ========== CASOS DE USO - PRODUCTOS ==========
+// CASOS DE USO - PRODUCTOS
 builder.Services.AddScoped<CreateProductUseCase>();
 builder.Services.AddScoped<GetAllProductsUseCase>();
 builder.Services.AddScoped<GetProductByIdUseCase>();
 builder.Services.AddScoped<UpdateProductUseCase>();
 builder.Services.AddScoped<DeleteProductUseCase>();
 
-// ========== CASOS DE USO - RECETAS ==========
+// CASOS DE USO - RECETAS
 builder.Services.AddScoped<CreateRecipeUseCase>();
 builder.Services.AddScoped<GetAllRecipesUseCase>();
 builder.Services.AddScoped<GetRecipesByProductIdUseCase>();
 builder.Services.AddScoped<UpdateRecipeUseCase>();
 builder.Services.AddScoped<DeleteRecipeUseCase>();
 
-// ========== CASOS DE USO - PRODUCCIONES ==========
+// CASOS DE USO - PRODUCCIONES
 builder.Services.AddScoped<CreateProductionUseCase>();
 builder.Services.AddScoped<GetAllProductionsUseCase>();
 builder.Services.AddScoped<GetProductionByIdUseCase>();
 builder.Services.AddScoped<UpdateProductionUseCase>();
 builder.Services.AddScoped<ToggleProductionStatusUseCase>();
 
-// ========== CASOS DE USO - PÉRDIDAS ==========
+// CASOS DE USO - PÉRDIDAS
 builder.Services.AddScoped<CreateLostUseCase>();
 builder.Services.AddScoped<GetAllLostsUseCase>();
 builder.Services.AddScoped<GetLostByIdUseCase>();
 builder.Services.AddScoped<UpdateLostUseCase>();
 builder.Services.AddScoped<DeleteLostUseCase>();
+
+// CASOS DE USO - PLANTAS DE PRODUCCIÓN
+builder.Services.AddScoped<CreatePlantProductionUseCase>();
+builder.Services.AddScoped<GetAllPlantProductionsUseCase>();
+builder.Services.AddScoped<GetPlantProductionByIdUseCase>();
+builder.Services.AddScoped<UpdatePlantProductionUseCase>();
+builder.Services.AddScoped<DeletePlantProductionUseCase>();
 
 var app = builder.Build();
 

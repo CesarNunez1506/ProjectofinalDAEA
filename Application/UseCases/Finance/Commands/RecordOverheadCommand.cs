@@ -4,7 +4,7 @@ using Application.DTOs.Finance.Request;
 using Application.DTOs.Finance;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.Commands.FinancialReports
+namespace Application.UseCases.Finance.Commands
 {
     public class RecordOverheadCommand
     {
@@ -34,7 +34,7 @@ namespace Application.UseCases.Finance.Commands.FinancialReports
                 Description = command.Description
             };
 
-            var useCase = new Application.UseCases.Finance.Commands.FinancialReports.RecordOverheadUseCase(_unitOfWork);
+            var useCase = new Application.UseCases.Finance.Commands.RecordOverheadUseCase(_unitOfWork);
             return await useCase.ExecuteAsync(dto);
         }
     }

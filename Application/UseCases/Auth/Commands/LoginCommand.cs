@@ -48,6 +48,33 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponseDt
         var roleName = user.Role?.Name ?? "Sin Rol";
         var token = _jwtTokenService.GenerateToken(user, roleName);
 
+        // Mapear permisos del rol
+        RoleDto? roleDto = null;
+        if (user.Role != null)
+        {
+            roleDto = new RoleDto
+            {
+                Id = user.Role.Id,
+                Name = user.Role.Name,
+                Description = user.Role.Description,
+                Status = user.Role.Status,
+                CreatedAt = user.Role.CreatedAt,
+                UpdatedAt = user.Role.UpdatedAt ?? user.Role.CreatedAt,
+                Permissions = user.Role.RolesPermissions.Select(rp => new PermissionDto
+                {
+                    Id = rp.Permission.Id,
+                    ModuleId = rp.Permission.ModuleId,
+                    ModuleName = rp.Permission.Module?.Name,
+                    CanRead = rp.Permission.CanRead,
+                    CanWrite = rp.Permission.CanWrite,
+                    CanEdit = rp.Permission.CanEdit,
+                    CanDelete = rp.Permission.CanDelete,
+                    CreatedAt = rp.Permission.CreatedAt,
+                    UpdatedAt = rp.Permission.UpdatedAt
+                }).ToList()
+            };
+        }
+
         return new LoginResponseDto
         {
             Token = token,
@@ -62,7 +89,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponseDt
                 RoleName = roleName,
                 Status = user.Status,
                 CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt
+                UpdatedAt = user.UpdatedAt,
+                Role = roleDto
             }
         };
     }

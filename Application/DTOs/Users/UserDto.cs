@@ -12,6 +12,7 @@ public class UserDto
     public bool Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public RoleDto? Role { get; set; }
 }
 
 public class CreateUserDto
