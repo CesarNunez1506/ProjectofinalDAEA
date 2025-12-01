@@ -1,3 +1,5 @@
+using Domain.Interfaces.Repositories;
+
 namespace Domain.Interfaces.Services;
 
 /// <summary>
@@ -9,4 +11,9 @@ public interface IUnitOfWork : IDisposable
     Task CommitTransactionAsync();
     Task RollbackTransactionAsync();
     Task<int> SaveChangesAsync();
+    
+    /// <summary>
+    /// Obtiene un repositorio genérico para la entidad solicitada
+    /// </summary>
+    IRepository<T> GetRepository<T>() where T : class;
 }
