@@ -15,6 +15,14 @@ using Application.UseCases.Production.Recipes;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
 using Application.UseCases.Production.PlantProductions;
+using Application.UseCases.Rentals;
+using Application.UseCases.Rentals.Customers;
+using Application.UseCases.Rentals.Places;
+using Application.UseCases.Rentals.Locations;
+using Application.UseCases.Finance.MonasteryExpenses;
+using Application.UseCases.Finance.Overheads;
+using Application.UseCases.Modules.Queries;
+using Application.UseCases.Modules.Commands;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -134,7 +142,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IModuleRepository, Infrastructure.Repositories.Modules.ModuleRepository>();
 
 // ========== SERVICIOS DEL MÓDULO DE USUARIOS ==========
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
@@ -144,6 +152,14 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 // Los repositorios específicos (Category, Product, Recipe, Production, Lost, PlantProduction) han sido reemplazados por el repositorio genérico
 // Solo se mantienen repositorios con lógica especial que no puede ser manejada genéricamente
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>(); // Mantener - tiene lógica compleja FIFO
+
+// ========== REPOSITORIOS DEL MÓDULO DE ALQUILERES ==========
+// Todos los repositorios específicos de Rentals han sido eliminados y reemplazados por el repositorio genérico
+// La lógica de CheckOverlapAsync se implementa directamente en los UseCases usando GenericRepository
+
+// ========== REPOSITORIOS DEL MÓDULO DE FINANZAS ==========
+// Todos los repositorios específicos de Finance han sido eliminados y reemplazados por el repositorio genérico
+// FinancialReportRepository, GeneralIncomeRepository, ModuleRepository -> Ahora usan GenericRepository via UnitOfWork
 
 // ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
 builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
@@ -205,6 +221,57 @@ builder.Services.AddScoped<GetAllPlantProductionsUseCase>();
 builder.Services.AddScoped<GetPlantProductionByIdUseCase>();
 builder.Services.AddScoped<UpdatePlantProductionUseCase>();
 builder.Services.AddScoped<DeletePlantProductionUseCase>();
+
+// ========== CASOS DE USO - ALQUILERES ==========
+builder.Services.AddScoped<CreateRentalUseCase>();
+builder.Services.AddScoped<GetAllRentalsUseCase>();
+builder.Services.AddScoped<GetRentalByIdUseCase>();
+builder.Services.AddScoped<UpdateRentalUseCase>();
+builder.Services.AddScoped<ToggleRentalStatusUseCase>();
+
+// ========== CASOS DE USO - CLIENTES ==========
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.CreateCustomerUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.GetAllCustomersUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.GetCustomerByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.UpdateCustomerUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.DeleteCustomerUseCase>();
+
+// ========== CASOS DE USO - LUGARES ==========
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.CreatePlaceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.GetAllPlacesUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.GetPlaceByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.UpdatePlaceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.DeletePlaceUseCase>();
+
+// ========== CASOS DE USO - UBICACIONES ==========
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.CreateLocationUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetAllLocationsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetLocationByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.UpdateLocationUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.DeleteLocationUseCase>();
+
+// ========== CASOS DE USO - GASTOS DEL MONASTERIO ==========
+builder.Services.AddScoped<CreateMonasteryExpenseUseCase>();
+builder.Services.AddScoped<GetAllMonasteryExpensesUseCase>();
+builder.Services.AddScoped<GetMonasteryExpenseByIdUseCase>();
+builder.Services.AddScoped<UpdateMonasteryExpenseUseCase>();
+builder.Services.AddScoped<DeleteMonasteryExpenseUseCase>();
+
+// ========== CASOS DE USO - OVERHEADS (MONASTERIO) ==========
+builder.Services.AddScoped<CreateOverheadUseCase>();
+builder.Services.AddScoped<GetAllOverheadsUseCase>();
+builder.Services.AddScoped<GetOverheadByIdUseCase>();
+builder.Services.AddScoped<UpdateOverheadUseCase>();
+builder.Services.AddScoped<DeleteOverheadUseCase>();
+builder.Services.AddScoped<GetExpensesByDateRangeUseCase>();
+
+// ========== CASOS DE USO - MÓDULOS ==========
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetAllModulesQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetModuleByIdQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.SearchModulesByNameQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.CreateModuleCommand>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.UpdateModuleCommand>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.DeleteModuleCommand>();
 
 var app = builder.Build();
 

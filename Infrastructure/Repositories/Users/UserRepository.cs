@@ -18,6 +18,9 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .Include(u => u.Role)
+                .ThenInclude(r => r!.RolesPermissions)
+                    .ThenInclude(rp => rp.Permission)
+                        .ThenInclude(p => p.Module)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
@@ -25,6 +28,9 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .Include(u => u.Role)
+                .ThenInclude(r => r!.RolesPermissions)
+                    .ThenInclude(rp => rp.Permission)
+                        .ThenInclude(p => p.Module)
             .FirstOrDefaultAsync(u => u.Email == email);
     }
 
