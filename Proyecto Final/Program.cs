@@ -21,6 +21,8 @@ using Application.UseCases.Rentals.Places;
 using Application.UseCases.Rentals.Locations;
 using Application.UseCases.Finance.MonasteryExpenses;
 using Application.UseCases.Finance.Overheads;
+using Application.UseCases.Modules.Queries;
+using Application.UseCases.Modules.Commands;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -134,7 +136,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IModuleRepository, Infrastructure.Repositories.Modules.ModuleRepository>();
 
 // ========== SERVICIOS DEL MÓDULO DE USUARIOS ==========
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
@@ -242,6 +244,14 @@ builder.Services.AddScoped<GetOverheadByIdUseCase>();
 builder.Services.AddScoped<UpdateOverheadUseCase>();
 builder.Services.AddScoped<DeleteOverheadUseCase>();
 builder.Services.AddScoped<GetExpensesByDateRangeUseCase>();
+
+// ========== CASOS DE USO - MÓDULOS ==========
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetAllModulesQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetModuleByIdQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.SearchModulesByNameQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.CreateModuleCommand>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.UpdateModuleCommand>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.DeleteModuleCommand>();
 
 var app = builder.Build();
 

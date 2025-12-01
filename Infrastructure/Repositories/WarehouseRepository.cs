@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-/// <summary>
-/// Implementación del repositorio de almacén para operaciones de producción
-/// </summary>
+
 public class WarehouseRepository : IWarehouseRepository
 {
     private readonly AppDbContext _context;
