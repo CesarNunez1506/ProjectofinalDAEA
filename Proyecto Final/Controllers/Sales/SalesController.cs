@@ -1,61 +1,56 @@
-using MediatR;
+using Application.DTOs.Sales;
+using Application.Features.Sales.Handlers;
 using Microsoft.AspNetCore.Mvc;
-using Application.Features.Sales.Commands.CreateSale;
-using Application.Features.Sales.Commands.UpdateSale;
-using Application.Features.Sales.Commands.CancelSale;
-using Application.Features.Sales.Commands.ProcessRefund;
-using Application.Features.Sales.Queries.GetSaleById;
-using Application.Features.Sales.Queries.GetSalesByStore;
 
-namespace WebAPI.Controllers
+namespace WebAPI.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class SalesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class SalesController : ControllerBase
+    private readonly ProcessSaleUseCase _processSale;
+    private readonly UpdateSaleUseCase _updateSale;
+    private readonly CancelSaleUseCase _cancelSale;
+    private readonly ProcessRefundUseCase _refundSale;
+
+    public SalesController(
+        ProcessSaleUseCase processSale,
+        UpdateSaleUseCase updateSale,
+        CancelSaleUseCase cancelSale,
+        ProcessRefundUseCase refundSale)
     {
-        private readonly IMediator _mediator;
+        _processSale = processSale;
+        _updateSale = updateSale;
+        _cancelSale = cancelSale;
+        _refundSale = refundSale;
+    }
 
-        public SalesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+    [HttpPost]
+    public async Task<IActionResult> CreateSale([FromBody] CreateSaleDto dto)
+    {
+        var result = await _processSale.ExecuteAsync(dto);
+        return Ok(result);
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateSale(CreateSaleCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return Ok(result);
-        }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateSale(Guid id, [FromBody] UpdateSaleDto dto)
+    {
+        dto.Id = id;
+        var result = await _updateSale.ExecuteAsync(dto);
+        return Ok(result);
+    }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSale(Guid id, UpdateSaleCommand command)
-        {
-            command.SaleId = id;
-            return Ok(await _mediator.Send(command));
-        }
+    [HttpPut("cancel/{id}")]
+    public async Task<IActionResult> CancelSale(Guid id)
+    {
+        var result = await _cancelSale.ExecuteAsync(id);
+        return Ok(result);
+    }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> CancelSale(Guid id)
-        {
-            return Ok(await _mediator.Send(new CancelSaleCommand(id)));
-        }
-
-        [HttpPost("refund/{id}")]
-        public async Task<IActionResult> Refund(Guid id)
-        {
-            return Ok(await _mediator.Send(new ProcessRefundCommand(id)));
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetSale(Guid id)
-        {
-            return Ok(await _mediator.Send(new GetSaleByIdQuery(id)));
-        }
-
-        [HttpGet("store/{storeId}")]
-        public async Task<IActionResult> GetSalesByStore(Guid storeId)
-        {
-            return Ok(await _mediator.Send(new GetSalesByStoreQuery(storeId)));
-        }
+    [HttpPost("refund")]
+    public async Task<IActionResult> Refund([FromBody] RefundDto dto)
+    {
+        var result = await _refundSale.ExecuteAsync(dto);
+        return Ok(result);
     }
 }
