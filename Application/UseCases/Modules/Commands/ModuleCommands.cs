@@ -86,7 +86,7 @@ public class UpdateModuleCommand
         module.Description = dto.Description;
         module.UpdatedAt = DateTime.UtcNow;
 
-        await _moduleRepository.UpdateAsync(module);
+        _moduleRepository.Update(module);
         await _unitOfWork.SaveChangesAsync();
 
         return new ModuleDto
@@ -132,7 +132,7 @@ public class DeleteModuleCommand
             );
         }
 
-        await _moduleRepository.DeleteAsync(module);
+        _moduleRepository.Remove(module);
         await _unitOfWork.SaveChangesAsync();
 
         return true;

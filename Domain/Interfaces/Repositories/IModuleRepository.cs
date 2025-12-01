@@ -9,7 +9,7 @@ namespace Domain.Interfaces.Repositories;
 /// Interfaz específica para el repositorio de Módulos
 /// Extiende el repositorio genérico y añade métodos específicos del dominio
 /// </summary>
-public interface IModuleRepository : IGenericRepository<Module>
+public interface IModuleRepository : IRepository<Module>
 {
     /// <summary>
     /// Obtiene un módulo por su nombre

@@ -33,14 +33,15 @@ public class ModuleRepository : GenericRepository<Module>, IModuleRepository
 
     public async Task<IEnumerable<Module>> GetAllWithPermissionsAsync()
     {
-        // Usando el método genérico GetAllAsync con Include
-        return await GetAllAsync(m => m.Permissions);
+        // Usando el método genérico GetAsync con Include
+        return await GetAsync(includeProperties: "Permissions");
     }
 
     public async Task<Module?> GetByIdWithPermissionsAsync(Guid id)
     {
-        // Usando el método genérico GetByIdAsync con Include
-        return await GetByIdAsync(id, m => m.Permissions);
+        // Usando el método genérico GetAsync con filtro e Include
+        var modules = await GetAsync(filter: m => m.Id == id, includeProperties: "Permissions");
+        return modules.FirstOrDefault();
     }
 
     // Podemos sobrescribir métodos del genérico si necesitamos lógica específica

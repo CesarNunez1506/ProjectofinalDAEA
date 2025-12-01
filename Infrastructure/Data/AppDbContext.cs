@@ -764,6 +764,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.ProductId).HasColumnName("productId");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
             entity.Property(e => e.ResourceId).HasColumnName("resourceId");
+            entity.Property(e => e.Unit)
+                .HasColumnName("unit")
+                .HasColumnType("enum_recipes_unit");
             entity.Property(e => e.UpdatedAt).HasColumnName("updatedAt");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Recipes)
