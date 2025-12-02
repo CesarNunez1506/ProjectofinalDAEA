@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories.Users;
 
 public class RoleRepository : IRoleRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
     public RoleRepository(AppDbContext context)
     {

@@ -99,15 +99,6 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<WarehouseResource> WarehouseResources { get; set; }
 
     public virtual DbSet<WarehouseStore> WarehouseStores { get; set; }
-    public  DbSet<Sale> Sales { get; set; }
-    public DbSet<SaleDetail> SaleDetails { get; set; }
-    public DbSet<Store> Stores { get; set; }
-
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<PaymentMethod> PaymentMethods { get; set; }
-    public DbSet<CashSession> CashSessions { get; set; }
-    public DbSet<SalesChannel> SalesChannels { get; set; }
-
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -673,7 +664,6 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("description");
             entity.Property(e => e.ImagenUrl)
-                .HasMaxLength(2048)
                 .HasColumnName("imagen_url");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)

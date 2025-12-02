@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories.Users;
 
 public class PermissionRepository : IPermissionRepository
 {
-    private readonly LocalDbContext _context;
+    private readonly AppDbContext _context;
 
     public PermissionRepository(AppDbContext context)
     {
