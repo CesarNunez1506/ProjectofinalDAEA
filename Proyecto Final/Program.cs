@@ -304,11 +304,14 @@ builder.Services.AddScoped<DeletePlantProductionUseCase>();
 // UseCases - Incomes
 builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Commands.CreateIncomeUseCase>();
 builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Queries.GetIncomesByPeriodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Queries.GetIncomesByPeriodQuery>();
 builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.CreateIncomeUseCase>();
 
 // UseCases - Expenses
 builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Commands.CreateExpenseUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Commands.CreateExpenseCommand>();
 builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Queries.GetExpensesByPeriodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Queries.GetExpensesByPeriodQuery>();
 builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.CreateExpenseUseCase>();
 
 // UseCases - MonasteryExpenses
@@ -325,8 +328,8 @@ builder.Services.AddScoped<Application.UseCases.Finance.Commands.DeleteOverheadU
 
 // UseCases - FinancialReports
 builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.GenerateFinancialReportUseCase>();
-builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Queries.GetFinancialReportByDateUseCase>();
-builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Queries.GetProfitLossStatementUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Queries.GetFinancialReportByDateQuery>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Queries.GetProfitLossStatementQuery>();
 builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.RecordOverheadUseCase>();
 
 // ========== CASOS DE USO - MUSEO  ==========
