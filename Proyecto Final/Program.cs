@@ -280,13 +280,6 @@ builder.Services.AddScoped<Application.UseCases.Sales.Stores.Commands.DeleteStor
 builder.Services.AddScoped<Application.UseCases.Sales.Stores.Queries.GetAllStoresQuery>();
 builder.Services.AddScoped<Application.UseCases.Sales.Stores.Queries.GetStoreByIdQuery>();
 
-// ========== MÓDULO DE VENTAS - CANALES DE VENTA ==========
-builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Commands.CreateSalesChannelCommand>();
-builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Commands.UpdateSalesChannelCommand>();
-builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Commands.DeleteSalesChannelCommand>();
-builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Queries.GetAllSalesChannelsQuery>();
-builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Queries.GetSalesChannelByIdQuery>();
-
 // ========== MÓDULO DE VENTAS - INVENTARIO POR TIENDA ==========
 builder.Services.AddScoped<Application.UseCases.Sales.WarehouseStores.Commands.CreateWarehouseStoreCommand>();
 builder.Services.AddScoped<Application.UseCases.Sales.WarehouseStores.Commands.UpdateWarehouseStoreCommand>();
