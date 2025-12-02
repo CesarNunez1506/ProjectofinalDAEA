@@ -73,8 +73,14 @@ if (!string.IsNullOrEmpty(databaseUrl))
     try
     {
         var uri = new Uri(databaseUrl);
-        connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.LocalPath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
+        var port = uri.Port > 0 ? uri.Port : 5432; // Default PostgreSQL port
+        var userInfo = uri.UserInfo.Split(':');
+        var username = userInfo.Length > 0 ? userInfo[0] : "";
+        var password = userInfo.Length > 1 ? userInfo[1] : "";
+        
+        connectionString = $"Host={uri.Host};Port={port};Database={uri.LocalPath.TrimStart('/')};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
         Console.WriteLine("[DEBUG] Converted DATABASE_URL to Npgsql format");
+        Console.WriteLine($"[DEBUG] Connection details - Host: {uri.Host}, Port: {port}, Database: {uri.LocalPath.TrimStart('/')}");
     }
     catch (Exception ex)
     {
