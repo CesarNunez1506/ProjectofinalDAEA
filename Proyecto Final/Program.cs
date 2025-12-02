@@ -54,13 +54,34 @@ if (builder.Environment.IsDevelopment())
     }
 }
 
+// Construir connection string desde variables de entorno o appsettings
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (string.IsNullOrEmpty(connectionString))
+{
+    var host = Environment.GetEnvironmentVariable("DB_HOST");
+    var port = Environment.GetEnvironmentVariable("DB_PORT");
+    var database = Environment.GetEnvironmentVariable("DB_NAME");
+    var username = Environment.GetEnvironmentVariable("DB_USER");
+    var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+    
+    if (!string.IsNullOrEmpty(host) && !string.IsNullOrEmpty(database))
+    {
+        connectionString = $"Host={host};Port={port ?? "5432"};Database={database};Username={username};Password={password}";
+    }
+    else
+    {
+        // Fallback a appsettings.json para desarrollo local sin .env
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    }
+}
+
 // Configurar DbContext (ya existente en el proyecto)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Configurar LocalDbContext para módulo de producción
 builder.Services.AddDbContext<LocalDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Agregar MediatR para CQRS
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
