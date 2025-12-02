@@ -1,10 +1,11 @@
 using Domain.Interfaces.Repositories.Production;
 using Domain.Interfaces.Repositories;
+using Domain.Entities;
+using Infrastructure.Repositories;
 using Domain.Interfaces.Repositories.Users;
 using Domain.Interfaces.Services.Production;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Services.Users;
-using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Services.Production;
 using Infrastructure.Services;
@@ -15,15 +16,17 @@ using Application.UseCases.Production.Recipes;
 using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
 using Application.UseCases.Production.PlantProductions;
-using Application.UseCases.Rentals;
-using Application.UseCases.Rentals.Customers;
-using Application.UseCases.Rentals.Places;
-using Application.UseCases.Rentals.Locations;
-using Application.UseCases.Finance.MonasteryExpenses;
-using Application.UseCases.Finance.Overheads;
-using Application.UseCases.Modules.Queries;
-using Application.UseCases.Modules.Commands;
 using Infrastructure.Data;
+using Application.UseCases.Finance.Incomes.Commands;
+using Application.UseCases.Finance.Incomes.Queries;
+using Application.UseCases.Finance.Expenses.Commands;
+using Application.UseCases.Finance.Expenses.Queries;
+using Application.UseCases.Finance.MonasteryExpenses.Commands;
+using Application.UseCases.Finance.MonasteryExpenses.Queries;
+using Application.UseCases.Finance.Overheads.Commands;
+using Application.UseCases.Finance.Overheads.Queries;
+using Application.UseCases.Finance.FinancialReports.Commands;
+using Application.UseCases.Finance.FinancialReports.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -31,6 +34,7 @@ using System.Text;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Proyecto_Final.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,13 +43,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configurar LocalDbContext para módulo de producción
-builder.Services.AddDbContext<LocalDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Nota: ya no usamos LocalDbContext — solo AppDbContext está en uso
 
 // Agregar MediatR para CQRS
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Application.DTOs.Users.UserDto>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.DTOs.Finance.ExpenseDto).Assembly));
 
 // Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(Application.Mappings.UserMappingProfile).Assembly);
@@ -138,30 +139,22 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ========== REPOSITORIOS DEL MÓDULO DE USUARIOS ==========
+// REPOSITORIOS DEL MÓDULO DE USUARIOS
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IModuleRepository, Infrastructure.Repositories.Modules.ModuleRepository>();
 
-// ========== SERVICIOS DEL MÓDULO DE USUARIOS ==========
+// SERVICIOS DEL MÓDULO DE USUARIOS
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
-// ========== REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN ==========
+// REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN
 // Los repositorios específicos (Category, Product, Recipe, Production, Lost, PlantProduction) han sido reemplazados por el repositorio genérico
 // Solo se mantienen repositorios con lógica especial que no puede ser manejada genéricamente
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>(); // Mantener - tiene lógica compleja FIFO
 
-// ========== REPOSITORIOS DEL MÓDULO DE ALQUILERES ==========
-// Todos los repositorios específicos de Rentals han sido eliminados y reemplazados por el repositorio genérico
-// La lógica de CheckOverlapAsync se implementa directamente en los UseCases usando GenericRepository
-
-// ========== REPOSITORIOS DEL MÓDULO DE FINANZAS ==========
-// Todos los repositorios específicos de Finance han sido eliminados y reemplazados por el repositorio genérico
-// FinancialReportRepository, GeneralIncomeRepository, ModuleRepository -> Ahora usan GenericRepository via UnitOfWork
-
-// ========== SERVICIOS DEL MÓDULO DE PRODUCCIÓN ==========
+// SERVICIOS DEL MÓDULO DE PRODUCCIÓN
 builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -180,98 +173,77 @@ builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseMo
 
 // Nota: El UnitOfWork ya está registrado arriba y contiene todos los repositorios de Inventario con lazy initialization
 
-// ========== CASOS DE USO - CATEGORÍAS ==========
+// CASOS DE USO - CATEGORÍAS
 builder.Services.AddScoped<CreateCategoryUseCase>();
 builder.Services.AddScoped<GetAllCategoriesUseCase>();
 builder.Services.AddScoped<GetCategoryByIdUseCase>();
 builder.Services.AddScoped<UpdateCategoryUseCase>();
 builder.Services.AddScoped<DeleteCategoryUseCase>();
 
-// ========== CASOS DE USO - PRODUCTOS ==========
+// CASOS DE USO - PRODUCTOS
 builder.Services.AddScoped<CreateProductUseCase>();
 builder.Services.AddScoped<GetAllProductsUseCase>();
 builder.Services.AddScoped<GetProductByIdUseCase>();
 builder.Services.AddScoped<UpdateProductUseCase>();
 builder.Services.AddScoped<DeleteProductUseCase>();
 
-// ========== CASOS DE USO - RECETAS ==========
+// CASOS DE USO - RECETAS
 builder.Services.AddScoped<CreateRecipeUseCase>();
 builder.Services.AddScoped<GetAllRecipesUseCase>();
 builder.Services.AddScoped<GetRecipesByProductIdUseCase>();
 builder.Services.AddScoped<UpdateRecipeUseCase>();
 builder.Services.AddScoped<DeleteRecipeUseCase>();
 
-// ========== CASOS DE USO - PRODUCCIONES ==========
+// CASOS DE USO - PRODUCCIONES
 builder.Services.AddScoped<CreateProductionUseCase>();
 builder.Services.AddScoped<GetAllProductionsUseCase>();
 builder.Services.AddScoped<GetProductionByIdUseCase>();
 builder.Services.AddScoped<UpdateProductionUseCase>();
 builder.Services.AddScoped<ToggleProductionStatusUseCase>();
 
-// ========== CASOS DE USO - PÉRDIDAS ==========
+// CASOS DE USO - PÉRDIDAS
 builder.Services.AddScoped<CreateLostUseCase>();
 builder.Services.AddScoped<GetAllLostsUseCase>();
 builder.Services.AddScoped<GetLostByIdUseCase>();
 builder.Services.AddScoped<UpdateLostUseCase>();
 builder.Services.AddScoped<DeleteLostUseCase>();
 
-// ========== CASOS DE USO - PLANTAS DE PRODUCCIÓN ==========
+// CASOS DE USO - PLANTAS DE PRODUCCIÓN
 builder.Services.AddScoped<CreatePlantProductionUseCase>();
 builder.Services.AddScoped<GetAllPlantProductionsUseCase>();
 builder.Services.AddScoped<GetPlantProductionByIdUseCase>();
 builder.Services.AddScoped<UpdatePlantProductionUseCase>();
 builder.Services.AddScoped<DeletePlantProductionUseCase>();
 
-// ========== CASOS DE USO - ALQUILERES ==========
-builder.Services.AddScoped<CreateRentalUseCase>();
-builder.Services.AddScoped<GetAllRentalsUseCase>();
-builder.Services.AddScoped<GetRentalByIdUseCase>();
-builder.Services.AddScoped<UpdateRentalUseCase>();
-builder.Services.AddScoped<ToggleRentalStatusUseCase>();
 
-// ========== CASOS DE USO - CLIENTES ==========
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.CreateCustomerUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.GetAllCustomersUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.GetCustomerByIdUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.UpdateCustomerUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.DeleteCustomerUseCase>();
 
-// ========== CASOS DE USO - LUGARES ==========
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.CreatePlaceUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.GetAllPlacesUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.GetPlaceByIdUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.UpdatePlaceUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.DeletePlaceUseCase>();
+// UseCases - Incomes
+builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Commands.CreateIncomeUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Queries.GetIncomesByPeriodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.CreateIncomeUseCase>();
 
-// ========== CASOS DE USO - UBICACIONES ==========
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.CreateLocationUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetAllLocationsUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetLocationByIdUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.UpdateLocationUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.DeleteLocationUseCase>();
+// UseCases - Expenses
+builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Commands.CreateExpenseUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Queries.GetExpensesByPeriodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.CreateExpenseUseCase>();
 
-// ========== CASOS DE USO - GASTOS DEL MONASTERIO ==========
+// UseCases - MonasteryExpenses
 builder.Services.AddScoped<CreateMonasteryExpenseUseCase>();
 builder.Services.AddScoped<GetAllMonasteryExpensesUseCase>();
 builder.Services.AddScoped<GetMonasteryExpenseByIdUseCase>();
-builder.Services.AddScoped<UpdateMonasteryExpenseUseCase>();
-builder.Services.AddScoped<DeleteMonasteryExpenseUseCase>();
 
-// ========== CASOS DE USO - OVERHEADS (MONASTERIO) ==========
-builder.Services.AddScoped<CreateOverheadUseCase>();
-builder.Services.AddScoped<GetAllOverheadsUseCase>();
-builder.Services.AddScoped<GetOverheadByIdUseCase>();
-builder.Services.AddScoped<UpdateOverheadUseCase>();
-builder.Services.AddScoped<DeleteOverheadUseCase>();
-builder.Services.AddScoped<GetExpensesByDateRangeUseCase>();
+// UseCases - Overheads
+builder.Services.AddScoped<Application.UseCases.Finance.Overheads.Commands.CreateOverheadUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Overheads.Queries.GetAllOverheadsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Overheads.Queries.GetOverheadByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Overheads.Commands.UpdateOverheadUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Commands.DeleteOverheadUseCase>();
 
-// ========== CASOS DE USO - MÓDULOS ==========
-builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetAllModulesQuery>();
-builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetModuleByIdQuery>();
-builder.Services.AddScoped<Application.UseCases.Modules.Queries.SearchModulesByNameQuery>();
-builder.Services.AddScoped<Application.UseCases.Modules.Commands.CreateModuleCommand>();
-builder.Services.AddScoped<Application.UseCases.Modules.Commands.UpdateModuleCommand>();
-builder.Services.AddScoped<Application.UseCases.Modules.Commands.DeleteModuleCommand>();
+// UseCases - FinancialReports
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.GenerateFinancialReportUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Queries.GetFinancialReportByDateUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Queries.GetProfitLossStatementUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.RecordOverheadUseCase>();
 
 // ========== CASOS DE USO - MUSEO  ==========
 // Entrances
