@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories.Users;
 
 public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext _context;
+    private readonly LocalDbContext _context;
 
     public UserRepository(AppDbContext context)
     {

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 namespace Infrastructure.Services;
 
 /// <summary>
-/// Implementación del patrón Unit of Work para manejar transacciones
+/// Implementación del patrón Unit of Work para manejar transacciones y repositorios
 /// </summary>
 public class UnitOfWork : IUnitOfWork
 {
@@ -19,6 +19,10 @@ public class UnitOfWork : IUnitOfWork
     {
         _context = context;
     }
+
+    // ============================================
+    // GESTIÓN DE TRANSACCIONES
+    // ============================================
 
     public async Task BeginTransactionAsync()
     {
@@ -53,13 +57,13 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<T> GetRepository<T>() where T : class
     {
         var type = typeof(T);
-        
+
         if (!_repositories.ContainsKey(type))
         {
             var repositoryInstance = new GenericRepository<T>(_context);
             _repositories[type] = repositoryInstance;
         }
-        
+
         return (IRepository<T>)_repositories[type];
     }
 
