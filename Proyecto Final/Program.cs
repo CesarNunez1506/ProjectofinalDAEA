@@ -211,12 +211,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Configurar CORS (si es necesario para el frontend)
+// Configurar CORS para el frontend Next.js
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // URL del frontend Next.js
+        policy.WithOrigins(
+                "http://localhost:3000",  // Frontend Next.js desarrollo
+                "http://localhost:3001",  // Puerto alternativo
+                "https://st-frontend.vercel.app", // Frontend en producción (ajustar según deployment)
+                "https://*.vercel.app"    // Cualquier subdominio de Vercel
+              )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
