@@ -55,14 +55,31 @@ if (builder.Environment.IsDevelopment())
 }
 
 // Construir connection string desde variables de entorno o appsettings
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
 // Log para debugging en Render
-Console.WriteLine($"[DEBUG] DATABASE_URL exists: {!string.IsNullOrEmpty(connectionString)}");
-if (!string.IsNullOrEmpty(connectionString))
+Console.WriteLine($"[DEBUG] DATABASE_URL exists: {!string.IsNullOrEmpty(databaseUrl)}");
+if (!string.IsNullOrEmpty(databaseUrl))
 {
-    Console.WriteLine($"[DEBUG] DATABASE_URL length: {connectionString.Length} chars");
-    Console.WriteLine($"[DEBUG] DATABASE_URL starts with: {connectionString.Substring(0, Math.Min(20, connectionString.Length))}...");
+    Console.WriteLine($"[DEBUG] DATABASE_URL length: {databaseUrl.Length} chars");
+    Console.WriteLine($"[DEBUG] DATABASE_URL starts with: {databaseUrl.Substring(0, Math.Min(20, databaseUrl.Length))}...");
+}
+
+string connectionString = null;
+
+if (!string.IsNullOrEmpty(databaseUrl))
+{
+    // Convertir de formato postgresql:// a formato Npgsql (Host=...;Port=...)
+    try
+    {
+        var uri = new Uri(databaseUrl);
+        connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.LocalPath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
+        Console.WriteLine("[DEBUG] Converted DATABASE_URL to Npgsql format");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[ERROR] Failed to parse DATABASE_URL: {ex.Message}");
+    }
 }
 
 if (string.IsNullOrEmpty(connectionString))

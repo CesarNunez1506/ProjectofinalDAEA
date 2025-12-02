@@ -102,25 +102,27 @@ public partial class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
+        // IMPORTANTE: No sobrescribir si ya está configurado desde Program.cs
+        if (optionsBuilder.IsConfigured)
         {
-            // Try to get connection string from environment variable first (for production/Docker)
-            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-            
-            // If DATABASE_URL is not set, build from individual variables or use defaults
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
-                var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
-                var database = Environment.GetEnvironmentVariable("DB_NAME") ?? "local";
-                var username = Environment.GetEnvironmentVariable("DB_USER") ?? "admin";
-                var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "admin123";
-                
-                connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
-            }
-            
-            optionsBuilder.UseNpgsql(connectionString);
+            return;
         }
+
+        // Solo se ejecuta para scaffolding o desarrollo sin DI
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+        
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+            var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+            var database = Environment.GetEnvironmentVariable("DB_NAME") ?? "local";
+            var username = Environment.GetEnvironmentVariable("DB_USER") ?? "admin";
+            var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "admin123";
+            
+            connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+        }
+        
+        optionsBuilder.UseNpgsql(connectionString);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
