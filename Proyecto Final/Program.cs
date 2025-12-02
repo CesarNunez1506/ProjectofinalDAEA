@@ -56,6 +56,15 @@ if (builder.Environment.IsDevelopment())
 
 // Construir connection string desde variables de entorno o appsettings
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+// Log para debugging en Render
+Console.WriteLine($"[DEBUG] DATABASE_URL exists: {!string.IsNullOrEmpty(connectionString)}");
+if (!string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine($"[DEBUG] DATABASE_URL length: {connectionString.Length} chars");
+    Console.WriteLine($"[DEBUG] DATABASE_URL starts with: {connectionString.Substring(0, Math.Min(20, connectionString.Length))}...");
+}
+
 if (string.IsNullOrEmpty(connectionString))
 {
     var host = Environment.GetEnvironmentVariable("DB_HOST");
@@ -64,16 +73,28 @@ if (string.IsNullOrEmpty(connectionString))
     var username = Environment.GetEnvironmentVariable("DB_USER");
     var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
     
+    Console.WriteLine($"[DEBUG] Individual vars - Host: {host}, DB: {database}, User: {username}");
+    
     if (!string.IsNullOrEmpty(host) && !string.IsNullOrEmpty(database))
     {
         connectionString = $"Host={host};Port={port ?? "5432"};Database={database};Username={username};Password={password}";
+        Console.WriteLine("[DEBUG] Built connection string from individual vars");
     }
     else
     {
         // Fallback a appsettings.json para desarrollo local sin .env
         connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        Console.WriteLine("[DEBUG] Using DefaultConnection from appsettings.json");
     }
 }
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine("[ERROR] No connection string available!");
+    throw new InvalidOperationException("Database connection string is not configured. Please set DATABASE_URL environment variable.");
+}
+
+Console.WriteLine("[DEBUG] Final connection string configured successfully");
 
 // Configurar DbContext (ya existente en el proyecto)
 builder.Services.AddDbContext<AppDbContext>(options =>
