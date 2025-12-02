@@ -1,9 +1,12 @@
+using Application.UseCases.Finance.Overheads.Commands;
 using Application.DTOs.Finance;
+
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.Overheads;
+namespace Application.UseCases.Finance.Overheads.Commands
 
+{
 /// <summary>
 /// Caso de uso para crear un nuevo overhead (cierre de gastos del monasterio)
 /// Asocia automáticamente los gastos sin asignar al nuevo overhead
@@ -88,4 +91,5 @@ public class CreateOverheadUseCase
             throw;
         }
     }
+}
 }

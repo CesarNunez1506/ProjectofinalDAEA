@@ -1,8 +1,10 @@
+using Application.UseCases.Finance.MonasteryExpenses.Commands;
 using Application.DTOs.Finance;
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.MonasteryExpenses;
+namespace Application.UseCases.Finance.MonasteryExpenses.Commands
+{
 
 /// <summary>
 /// Caso de uso para actualizar un gasto del monasterio
@@ -53,4 +55,5 @@ public class UpdateMonasteryExpenseUseCase
             UpdatedAt = expense.UpdatedAt
         };
     }
+}
 }

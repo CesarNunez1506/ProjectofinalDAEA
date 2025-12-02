@@ -1,28 +1,29 @@
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.MonasteryExpenses;
-
-/// <summary>
-/// Caso de uso para eliminar un gasto del monasterio
-/// </summary>
-public class DeleteMonasteryExpenseUseCase
+namespace Application.UseCases.Finance.MonasteryExpenses.Commands
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public DeleteMonasteryExpenseUseCase(IUnitOfWork unitOfWork)
+    /// <summary>
+    /// Caso de uso para eliminar un gasto del monasterio
+    /// </summary>
+    public class DeleteMonasteryExpenseUseCase
     {
-        _unitOfWork = unitOfWork;
-    }
+        private readonly IUnitOfWork _unitOfWork;
 
-    public async Task ExecuteAsync(Guid id)
-    {
-        var repository = _unitOfWork.GetRepository<MonasteryExpense>();
+        public DeleteMonasteryExpenseUseCase(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
-        var expense = await repository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"No se encontró el gasto con ID {id}");
+        public async Task ExecuteAsync(Guid id)
+        {
+            var repository = _unitOfWork.GetRepository<MonasteryExpense>();
 
-        repository.Remove(expense);
-        await _unitOfWork.SaveChangesAsync();
+            var expense = await repository.GetByIdAsync(id)
+                ?? throw new KeyNotFoundException($"No se encontró el gasto con ID {id}");
+
+            repository.Remove(expense);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

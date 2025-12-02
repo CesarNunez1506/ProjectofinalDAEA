@@ -2,7 +2,7 @@ using Application.DTOs.Finance;
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.MonasteryExpenses;
+namespace Application.UseCases.Finance.MonasteryExpenses.Queries;
 
 /// <summary>
 /// Caso de uso para obtener todos los gastos del monasterio

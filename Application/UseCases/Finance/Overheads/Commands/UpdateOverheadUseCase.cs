@@ -1,8 +1,10 @@
+using Application.UseCases.Finance.Overheads.Commands;
 using Application.DTOs.Finance;
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.Overheads;
+namespace Application.UseCases.Finance.Overheads.Commands
+{
 
 /// <summary>
 /// Caso de uso para actualizar un overhead
@@ -69,4 +71,5 @@ public class UpdateOverheadUseCase
             }).ToList()
         };
     }
+}
 }

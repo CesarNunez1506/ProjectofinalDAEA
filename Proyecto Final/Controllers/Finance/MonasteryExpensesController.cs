@@ -1,6 +1,8 @@
 using Application.DTOs.Finance;
-using Application.UseCases.Finance.MonasteryExpenses;
+using Application.UseCases.Finance.MonasteryExpenses.Commands;
+using Application.UseCases.Finance.MonasteryExpenses.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Proyecto_Final.Controllers.Finance;
 

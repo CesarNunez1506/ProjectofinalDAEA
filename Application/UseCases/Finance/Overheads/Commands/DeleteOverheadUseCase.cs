@@ -1,28 +1,29 @@
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.Overheads;
-
-/// <summary>
-/// Caso de uso para eliminar un overhead
-/// </summary>
-public class DeleteOverheadUseCase
+namespace Application.UseCases.Finance.Commands
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public DeleteOverheadUseCase(IUnitOfWork unitOfWork)
+    /// <summary>
+    /// Caso de uso para eliminar un overhead
+    /// </summary>
+    public class DeleteOverheadUseCase
     {
-        _unitOfWork = unitOfWork;
-    }
+        private readonly IUnitOfWork _unitOfWork;
 
-    public async Task ExecuteAsync(Guid id)
-    {
-        var repository = _unitOfWork.GetRepository<Overhead>();
+        public DeleteOverheadUseCase(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
-        var overhead = await repository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"No se encontró el overhead con ID {id}");
+        public async Task ExecuteAsync(Guid id)
+        {
+            var repository = _unitOfWork.GetRepository<Overhead>();
 
-        repository.Remove(overhead);
-        await _unitOfWork.SaveChangesAsync();
+            var overhead = await repository.GetByIdAsync(id)
+                ?? throw new KeyNotFoundException($"No se encontró el overhead con ID {id}");
+
+            repository.Remove(overhead);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }
