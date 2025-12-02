@@ -1,8 +1,7 @@
 using Application.DTOs.Inventory;
-using Application.DTOs.Inventory;
 using AutoMapper;
-using Domain.Interfaces.Services;
 using Domain.Entities;
+using Domain.Interfaces.Services;
 using MediatR;
 
 namespace Application.UseCases.Inventory.Commands;
@@ -29,9 +28,9 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
         warehouse.UpdatedAt = DateTime.UtcNow;
 
         var warehouseRepo = _unitOfWork.GetRepository<Warehouse>();
-        var createdWarehouse = await warehouseRepo.AddAsync(warehouse);
+        await warehouseRepo.AddAsync(warehouse);
         await _unitOfWork.SaveChangesAsync();
 
-        return _mapper.Map<WarehouseDto>(createdWarehouse);
+        return _mapper.Map<WarehouseDto>(warehouse);
     }
 }

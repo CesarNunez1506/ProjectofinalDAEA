@@ -17,8 +17,9 @@ public class GetWarehouseProductStockQueryHandler : IRequestHandler<GetWarehouse
 
     public async Task<int> Handle(GetWarehouseProductStockQuery request, CancellationToken cancellationToken)
     {
-        var warehouseRepo = _unitOfWork.GetRepository<Warehouse>();
-        var stock = await warehouseRepo.GetProductStockAsync(request.WarehouseId, request.ProductId);
-        return stock;
+        var warehouseProductRepo = _unitOfWork.GetRepository<WarehouseProduct>();
+        var warehouseProduct = await warehouseProductRepo.FirstOrDefaultAsync(
+            wp => wp.WarehouseId == request.WarehouseId && wp.ProductId == request.ProductId);
+        return warehouseProduct?.Quantity ?? 0;
     }
 }

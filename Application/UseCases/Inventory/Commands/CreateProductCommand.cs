@@ -1,9 +1,8 @@
 using Application.DTOs.Inventory;
-using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Exceptions.Inventory;
 using Domain.Interfaces.Services;
-using Domain.Entities;
 using MediatR;
 
 namespace Application.UseCases.Inventory.Commands;
@@ -31,7 +30,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     {
         // Validar que la categoría exista
         var categoryRepo = _unitOfWork.GetRepository<Category>();
-        var categoryExists = await categoryRepo.ExistsAsync(c => c.Id == request.Dto.CategoryId);
+        var categoryExists = await categoryRepo.AnyAsync(c => c.Id == request.Dto.CategoryId);
         if (!categoryExists)
         {
             throw new CategoryNotFoundException(request.Dto.CategoryId);
@@ -46,10 +45,10 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
         // Guardar en el repositorio
         var productRepo = _unitOfWork.GetRepository<Product>();
-        var createdProduct = await productRepo.AddAsync(product);
+        await productRepo.AddAsync(product);
         await _unitOfWork.SaveChangesAsync();
 
         // Retornar DTO
-        return _mapper.Map<ProductDto>(createdProduct);
+        return _mapper.Map<ProductDto>(product);
     }
 }

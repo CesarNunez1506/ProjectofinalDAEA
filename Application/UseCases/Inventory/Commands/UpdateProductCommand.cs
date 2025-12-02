@@ -1,6 +1,6 @@
 using Application.DTOs.Inventory;
-using Application.DTOs.Inventory;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Exceptions.Inventory;
 using Domain.Interfaces.Services;
 using MediatR;
@@ -40,7 +40,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         if (request.Dto.CategoryId.HasValue)
         {
             var categoryRepo = _unitOfWork.GetRepository<Category>();
-            var categoryExists = await categoryRepo.ExistsAsync(c => c.Id == request.Dto.CategoryId.Value);
+            var categoryExists = await categoryRepo.AnyAsync(c => c.Id == request.Dto.CategoryId.Value);
             if (!categoryExists)
             {
                 throw new CategoryNotFoundException(request.Dto.CategoryId.Value);
