@@ -2,6 +2,8 @@ using Domain.Interfaces.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Domain.Entities;
+using Domain.Interfaces.Repositories.Finance;
 
 namespace Infrastructure.Repositories;
 
@@ -109,5 +111,161 @@ public class GenericRepository<T> : IRepository<T> where T : class
         if (predicate == null)
             return await _dbSet.CountAsync();
         return await _dbSet.CountAsync(predicate);
+    }
+}
+
+// aqui repositiro finace mo modulo finance
+// Implementaciones específicas reutilizando el repositorio genérico
+
+public class GeneralIncomeGenericRepository : GenericRepository<GeneralIncome>, IGeneralIncomeGenericRepository
+{
+    private readonly AppDbContext _context;
+
+    public GeneralIncomeGenericRepository(AppDbContext context) : base(context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<GeneralIncome>> GetIncomesByPeriodAsync(DateTime startDate, DateTime endDate)
+    {
+        return await _dbSet
+            .Where(i => i.Date >= startDate && i.Date <= endDate)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<GeneralIncome>> GetByReportIdAsync(Guid reportId)
+    {
+        return await _dbSet
+            .Where(i => i.ReportId == reportId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<GeneralIncome>> GetByModuleAsync(Guid moduleId)
+    {
+        return await _dbSet
+            .Where(i => i.ModuleId == moduleId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<decimal> GetTotalAmountByPeriodAsync(DateTime startDate, DateTime endDate)
+    {
+        return await _dbSet
+            .Where(i => i.Date >= startDate && i.Date <= endDate)
+            .SumAsync(i => i.Amount);
+    }
+
+    public void DeleteIncome(GeneralIncome entity)
+    {
+        Remove(entity);
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
+    }
+}
+
+public class GeneralExpenseGenericRepository : GenericRepository<GeneralExpense>, IGeneralExpenseGenericRepository
+{
+    private readonly AppDbContext _context;
+
+    public GeneralExpenseGenericRepository(AppDbContext context) : base(context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<GeneralExpense>> GetExpensesByPeriodAsync(DateTime startDate, DateTime endDate)
+    {
+        return await _dbSet
+            .Where(e => e.Date >= startDate && e.Date <= endDate)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<GeneralExpense>> GetByReportIdAsync(Guid reportId)
+    {
+        return await _dbSet
+            .Where(e => e.ReportId == reportId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<GeneralExpense>> GetByModuleAsync(Guid moduleId)
+    {
+        return await _dbSet
+            .Where(e => e.ModuleId == moduleId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<decimal> GetTotalAmountByPeriodAsync(DateTime startDate, DateTime endDate)
+    {
+        return await _dbSet
+            .Where(e => e.Date >= startDate && e.Date <= endDate)
+            .SumAsync(e => e.Amount);
+    }
+
+    public void DeleteExpense(GeneralExpense entity)
+    {
+        Remove(entity);
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
+    }
+}
+
+public class MonasteryExpenseGenericRepository : GenericRepository<MonasteryExpense>, IMonasteryExpenseGenericRepository
+{
+    private readonly AppDbContext _context;
+
+    public MonasteryExpenseGenericRepository(AppDbContext context) : base(context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<MonasteryExpense>> GetExpensesByPeriodAsync(DateTime startDate, DateTime endDate)
+    {
+        return await _dbSet
+            .Where(e => e.Date >= startDate && e.Date <= endDate)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<MonasteryExpense>> GetByCategoryAsync(string category)
+    {
+        return await _dbSet
+            .Where(e => e.Category == category)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<MonasteryExpense>> GetByOverheadIdAsync(Guid overheadId)
+    {
+        return await _dbSet
+            .Where(e => e.OverheadsId == overheadId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<double> GetTotalAmountByPeriodAsync(DateTime startDate, DateTime endDate)
+    {
+        return await _dbSet
+            .Where(e => e.Date >= startDate && e.Date <= endDate)
+            .SumAsync(e => e.Amount);
+    }
+
+    public void DeleteExpense(MonasteryExpense entity)
+    {
+        Remove(entity);
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
     }
 }

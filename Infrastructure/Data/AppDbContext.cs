@@ -664,7 +664,6 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("description");
             entity.Property(e => e.ImagenUrl)
-                .HasMaxLength(2048)
                 .HasColumnName("imagen_url");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)

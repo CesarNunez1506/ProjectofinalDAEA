@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Application.DTOs.Finance;
-using Application.UseCases.Finance.Commands.FinancialReports;
-using Application.UseCases.Finance.Queries.FinancialReports;
+using Application.UseCases.Finance.FinancialReports.Commands;
+using Application.UseCases.Finance.FinancialReports.Queries;
 using System.Globalization;
 
 namespace ProyectoFinal.Controllers
@@ -10,12 +9,12 @@ namespace ProyectoFinal.Controllers
     [Route("api/[controller]")]
     public class FinancialReportsController : ControllerBase
     {
-        private readonly GenerateFinancialReportCommand _generateReport;
+        private readonly GenerateFinancialReportUseCase _generateReport;
         private readonly GetFinancialReportByDateQuery _getReport;
         private readonly GetProfitLossStatementQuery _getProfitLoss;
 
         public FinancialReportsController(
-            GenerateFinancialReportCommand generateReport,
+            GenerateFinancialReportUseCase generateReport,
             GetFinancialReportByDateQuery getReport,
             GetProfitLossStatementQuery getProfitLoss)
         {
@@ -25,10 +24,10 @@ namespace ProyectoFinal.Controllers
         }
 
         [HttpPost("generate")]
-        public async Task<IActionResult> GenerateReport([FromBody] GenerateFinancialReportCommand command)
+        public async Task<IActionResult> GenerateReport([FromBody] GenerateFinancialReportDto dto)
         {
-            var reportId = await _generateReport.ExecuteAsync(command);
-            return Ok(reportId);
+            var report = await _generateReport.ExecuteAsync(dto);
+            return Ok(report);
         }
 
         /// <summary>

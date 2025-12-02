@@ -1,4 +1,4 @@
-using Application.UseCases.Finance.Queries.FinancialReports;
+using Application.UseCases.Finance.Incomes.Queries;
 using FluentValidation;
 
 namespace Application.Validators.Finance

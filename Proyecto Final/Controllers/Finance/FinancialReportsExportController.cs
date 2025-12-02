@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Application.DTOs.Finance;
-using Application.UseCases.Finance.Commands.FinancialReports;
-using Application.UseCases.Finance.Queries.FinancialReports;
+using Application.UseCases.Finance.FinancialReports.Commands;
+using Application.UseCases.Finance.Expenses.Queries;
+using Application.UseCases.Finance.Incomes.Queries;
 
 namespace ProyectoFinal.Controllers.Finance
 {
@@ -30,7 +32,7 @@ namespace ProyectoFinal.Controllers.Finance
         /// Recibe un objeto similar a GenerateFinancialReportCommand en el body con StartDate/EndDate.
         /// </summary>
         [HttpPost("export")]
-        public async Task<IActionResult> ExportReport([FromBody] GenerateFinancialReportCommand command)
+        public async Task<IActionResult> ExportReport([FromBody] GenerateFinancialReportDto command)
         {
             if (command == null)
                 return BadRequest("Request body is required.");
@@ -39,8 +41,8 @@ namespace ProyectoFinal.Controllers.Finance
             var end = command.EndDate;
 
             // Obtener datos desde los use-cases existentes
-            var incomes = await _getIncomes.ExecuteAsync(start, end);
-            var expenses = await _getExpenses.ExecuteAsync(start, end);
+            var incomes = (await _getIncomes.ExecuteAsync(start, end)) ?? new List<IncomeDto>();
+            var expenses = (await _getExpenses.ExecuteAsync(start, end)) ?? new List<ExpenseDto>();
 
             // Crear workbook con ClosedXML
             using var workbook = new XLWorkbook();
@@ -56,7 +58,7 @@ namespace ProyectoFinal.Controllers.Finance
             wsIn.Cell(1, 7).Value = "ReportId";
 
             var row = 2;
-            foreach (var inc in incomes ?? Enumerable.Empty<IncomeDto>())
+            foreach (var inc in incomes)
             {
                 wsIn.Cell(row, 1).Value = inc.Id.ToString();
                 wsIn.Cell(row, 2).Value = inc.ModuleId.ToString();
@@ -81,7 +83,7 @@ namespace ProyectoFinal.Controllers.Finance
             wsEx.Cell(1, 7).Value = "ReportId";
 
             row = 2;
-            foreach (var ex in expenses ?? Enumerable.Empty<ExpenseDto>())
+            foreach (var ex in expenses)
             {
                 wsEx.Cell(row, 1).Value = ex.Id.ToString();
                 wsEx.Cell(row, 2).Value = ex.ModuleId.ToString();

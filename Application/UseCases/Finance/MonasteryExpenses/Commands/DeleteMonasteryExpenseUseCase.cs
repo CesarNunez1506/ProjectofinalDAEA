@@ -1,7 +1,7 @@
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.Commands
+namespace Application.UseCases.Finance.MonasteryExpenses.Commands
 {
     /// <summary>
     /// Caso de uso para eliminar un gasto del monasterio

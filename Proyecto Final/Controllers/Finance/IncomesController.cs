@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Application.DTOs.Finance;
-using Application.UseCases.Finance.Commands.FinancialReports;
-using Application.UseCases.Finance.Queries.FinancialReports;
+using Application.UseCases.Finance.Incomes.Commands;
+using Application.UseCases.Finance.Incomes.Queries;
 
 namespace ProyectoFinal.Controllers
 {
@@ -9,11 +8,11 @@ namespace ProyectoFinal.Controllers
     [Route("api/[controller]")]
     public class IncomesController : ControllerBase
     {
-        private readonly CreateIncomeCommand _createIncome;
+        private readonly CreateIncomeUseCase _createIncome;
         private readonly GetIncomesByPeriodQuery _getIncomes;
 
         public IncomesController(
-            CreateIncomeCommand createIncome,
+            CreateIncomeUseCase createIncome,
             GetIncomesByPeriodQuery getIncomes)
         {
             _createIncome = createIncome;
@@ -21,14 +20,14 @@ namespace ProyectoFinal.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateIncome([FromBody] CreateIncomeCommand command)
+        public async Task<IActionResult> CreateIncome([FromBody] CreateIncomeDto dto)
         {
-            var id = await _createIncome.ExecuteAsync(command);
-            return Ok(id);
+            var result = await _createIncome.ExecuteAsync(dto);
+            return Ok(result);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetIncomes([FromQuery] Application.UseCases.Finance.Queries.FinancialReports.GetIncomesByPeriodQuery query)
+        public async Task<IActionResult> GetIncomes([FromQuery] GetIncomesByPeriodQuery query)
         {
             var result = await _getIncomes.ExecuteAsync(query.StartDate, query.EndDate);
             return Ok(result);

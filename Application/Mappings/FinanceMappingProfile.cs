@@ -1,6 +1,10 @@
 using AutoMapper;
 using Application.DTOs.Finance;
-using Application.DTOs.Finance.Request;
+using Application.UseCases.Finance.Expenses.Commands;
+using Application.UseCases.Finance.Incomes.Commands;
+using Application.UseCases.Finance.Overheads.Commands;
+using Application.UseCases.Finance.MonasteryExpenses.Commands;
+using Application.UseCases.Finance.FinancialReports.Commands;
 using Domain.Entities;
 
 namespace Application.Mappings;

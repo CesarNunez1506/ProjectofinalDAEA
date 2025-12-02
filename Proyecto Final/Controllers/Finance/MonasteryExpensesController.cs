@@ -1,7 +1,6 @@
 using Application.DTOs.Finance;
-using Application.DTOs.Finance.Request;
-using Application.UseCases.Finance.Commands;
-using Application.UseCases.Finance.MonasteryExpenses;
+using Application.UseCases.Finance.MonasteryExpenses.Commands;
+using Application.UseCases.Finance.MonasteryExpenses.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

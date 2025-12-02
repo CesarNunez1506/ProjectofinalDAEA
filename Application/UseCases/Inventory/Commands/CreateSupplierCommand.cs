@@ -1,0 +1,44 @@
+using Application.DTOs.Inventory;
+using AutoMapper;
+using Domain.Entities;
+using Domain.Exceptions.Inventory;
+using Domain.Interfaces.Services;
+using MediatR;
+
+namespace Application.UseCases.Inventory.Commands;
+
+public record CreateSupplierCommand(CreateSupplierDto Dto) : IRequest<SupplierDto>;
+
+public class CreateSupplierCommandHandler : IRequestHandler<CreateSupplierCommand, SupplierDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public CreateSupplierCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<SupplierDto> Handle(CreateSupplierCommand request, CancellationToken cancellationToken)
+    {
+        // Validar que no exista un proveedor con el mismo RUC
+        var supplierRepo = _unitOfWork.GetRepository<Supplier>();
+        var exists = await supplierRepo.AnyAsync(s => s.Ruc == request.Dto.Ruc);
+        if (exists)
+        {
+            throw new DuplicateSupplierException(request.Dto.Ruc);
+        }
+
+        var supplier = _mapper.Map<Supplier>(request.Dto);
+        supplier.Id = Guid.NewGuid();
+        supplier.Status = true;
+        supplier.CreatedAt = DateTime.UtcNow;
+        supplier.UpdatedAt = DateTime.UtcNow;
+
+        await supplierRepo.AddAsync(supplier);
+        await _unitOfWork.SaveChangesAsync();
+
+        return _mapper.Map<SupplierDto>(supplier);
+    }
+}

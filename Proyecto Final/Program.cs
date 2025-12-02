@@ -17,6 +17,16 @@ using Application.UseCases.Production.Productions;
 using Application.UseCases.Production.Losts;
 using Application.UseCases.Production.PlantProductions;
 using Infrastructure.Data;
+using Application.UseCases.Finance.Incomes.Commands;
+using Application.UseCases.Finance.Incomes.Queries;
+using Application.UseCases.Finance.Expenses.Commands;
+using Application.UseCases.Finance.Expenses.Queries;
+using Application.UseCases.Finance.MonasteryExpenses.Commands;
+using Application.UseCases.Finance.MonasteryExpenses.Queries;
+using Application.UseCases.Finance.Overheads.Commands;
+using Application.UseCases.Finance.Overheads.Queries;
+using Application.UseCases.Finance.FinancialReports.Commands;
+using Application.UseCases.Finance.FinancialReports.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -25,6 +35,7 @@ using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Proyecto_Final.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,10 +50,12 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Appli
 
 // Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(Application.Mappings.UserMappingProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(Application.Mappings.InventoryMappingProfile).Assembly);
 
 // Agregar FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Application.Validators.Users.CreateUserDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<Application.Validators.Inventory.CreateProductValidator>();
 
 // Agregar controladores
 builder.Services.AddControllers();
@@ -81,8 +94,11 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "ST-ERP API",
         Version = "v1",
-        Description = "API del Sistema ERP Santa Teresa - Módulos de Producción y Usuarios"
+        Description = "API del Sistema ERP Santa Teresa - Módulos de Producción, Usuarios e Inventario"
     });
+
+    // Resolver conflictos de nombres de DTOs usando namespace completo
+    options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
 
     // Configurar JWT en Swagger
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -143,6 +159,20 @@ builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// ========== REPOSITORIOS DEL MÓDULO DE INVENTARIO ==========
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IProductRepository, Infrastructure.Repositories.Inventory.ProductRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.ICategoryRepository, Infrastructure.Repositories.Inventory.CategoryRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseRepository, Infrastructure.Repositories.Inventory.WarehouseRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.ISupplierRepository, Infrastructure.Repositories.Inventory.SupplierRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IResourceRepository, Infrastructure.Repositories.Inventory.ResourceRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseProductRepository, Infrastructure.Repositories.Inventory.WarehouseProductRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseResourceRepository, Infrastructure.Repositories.Inventory.WarehouseResourceRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IBuysProductRepository, Infrastructure.Repositories.Inventory.BuysProductRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseMovementProductRepository, Infrastructure.Repositories.Inventory.WarehouseMovementProductRepository>();
+builder.Services.AddScoped<Domain.Interfaces.Repositories.Inventory.IWarehouseMovementResourceRepository, Infrastructure.Repositories.Inventory.WarehouseMovementResourceRepository>();
+
+// Nota: El UnitOfWork ya está registrado arriba y contiene todos los repositorios de Inventario con lazy initialization
+
 // CASOS DE USO - CATEGORÍAS
 builder.Services.AddScoped<CreateCategoryUseCase>();
 builder.Services.AddScoped<GetAllCategoriesUseCase>();
@@ -185,6 +215,36 @@ builder.Services.AddScoped<GetPlantProductionByIdUseCase>();
 builder.Services.AddScoped<UpdatePlantProductionUseCase>();
 builder.Services.AddScoped<DeletePlantProductionUseCase>();
 
+
+
+// UseCases - Incomes
+builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Commands.CreateIncomeUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Queries.GetIncomesByPeriodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.CreateIncomeUseCase>();
+
+// UseCases - Expenses
+builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Commands.CreateExpenseUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Queries.GetExpensesByPeriodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.CreateExpenseUseCase>();
+
+// UseCases - MonasteryExpenses
+builder.Services.AddScoped<CreateMonasteryExpenseUseCase>();
+builder.Services.AddScoped<GetAllMonasteryExpensesUseCase>();
+builder.Services.AddScoped<GetMonasteryExpenseByIdUseCase>();
+
+// UseCases - Overheads
+builder.Services.AddScoped<Application.UseCases.Finance.Overheads.Commands.CreateOverheadUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Overheads.Queries.GetAllOverheadsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Overheads.Queries.GetOverheadByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Overheads.Commands.UpdateOverheadUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.Commands.DeleteOverheadUseCase>();
+
+// UseCases - FinancialReports
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.GenerateFinancialReportUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Queries.GetFinancialReportByDateUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Queries.GetProfitLossStatementUseCase>();
+builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.RecordOverheadUseCase>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -197,6 +257,9 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = "swagger"; // Acceder desde: http://localhost:5000/swagger
     });
 }
+
+// Middleware global de manejo de excepciones (debe ir primero)
+app.UseGlobalExceptionHandler();
 
 app.UseCors("AllowFrontend");
 app.UseStaticFiles(); // Para servir archivos desde wwwroot/ (imágenes de productos)

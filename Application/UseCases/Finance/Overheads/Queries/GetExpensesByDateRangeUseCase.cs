@@ -2,7 +2,7 @@ using Application.DTOs.Finance;
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.Overheads;
+namespace Application.UseCases.Finance.Overheads.Queries;
 
 /// <summary>
 /// Caso de uso para obtener gastos del monasterio por rango de fechas

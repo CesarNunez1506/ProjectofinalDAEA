@@ -1,9 +1,9 @@
-using Application.DTOs.Finance.Request;
+using Application.UseCases.Finance.MonasteryExpenses.Commands;
 using Application.DTOs.Finance;
 using Domain.Entities;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases.Finance.Commands
+namespace Application.UseCases.Finance.MonasteryExpenses.Commands
 {
 
 /// <summary>

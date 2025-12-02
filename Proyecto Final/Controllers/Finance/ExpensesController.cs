@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.DTOs.Finance;
-using Application.UseCases.Finance.Commands.FinancialReports;
-using Application.UseCases.Finance.Queries.FinancialReports;
+using Application.UseCases.Finance.Expenses.Commands;
+using Application.UseCases.Finance.Expenses.Queries;
 
 namespace ProyectoFinal.Controllers
 {
@@ -28,7 +28,7 @@ namespace ProyectoFinal.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetExpenses([FromQuery] Application.UseCases.Finance.Queries.FinancialReports.GetExpensesByPeriodQuery query)
+        public async Task<IActionResult> GetExpenses([FromQuery] GetExpensesByPeriodQuery query)
         {
             var result = await _getExpenses.ExecuteAsync(query.StartDate, query.EndDate);
             return Ok(result);
