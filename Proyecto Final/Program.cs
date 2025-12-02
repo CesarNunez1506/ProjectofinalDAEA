@@ -238,6 +238,14 @@ builder.Services.AddScoped<IModuleRepository, Infrastructure.Repositories.Module
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
+// CASOS DE USO - MÓDULOS
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetAllModulesQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.GetModuleByIdQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Queries.SearchModulesByNameQuery>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.CreateModuleCommand>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.UpdateModuleCommand>();
+builder.Services.AddScoped<Application.UseCases.Modules.Commands.DeleteModuleCommand>();
+
 // REPOSITORIOS DEL MÓDULO DE PRODUCCIÓN
 // Los repositorios específicos (Category, Product, Recipe, Production, Lost, PlantProduction) han sido reemplazados por el repositorio genérico
 // Solo se mantienen repositorios con lógica especial que no puede ser manejada genéricamente
