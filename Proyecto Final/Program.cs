@@ -220,11 +220,15 @@ builder.Services.AddScoped<DeletePlantProductionUseCase>();
 // UseCases - Incomes
 builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Commands.CreateIncomeUseCase>();
 builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Queries.GetIncomesByPeriodUseCase>();
+// Register query object used by controllers (model-binding + ExecuteAsync)
+builder.Services.AddScoped<Application.UseCases.Finance.Incomes.Queries.GetIncomesByPeriodQuery>();
 builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.CreateIncomeUseCase>();
 
 // UseCases - Expenses
 builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Commands.CreateExpenseUseCase>();
 builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Queries.GetExpensesByPeriodUseCase>();
+// Register query object used by controllers (model-binding + ExecuteAsync)
+builder.Services.AddScoped<Application.UseCases.Finance.Expenses.Queries.GetExpensesByPeriodQuery>();
 builder.Services.AddScoped<Application.UseCases.Finance.FinancialReports.Commands.CreateExpenseUseCase>();
 
 // UseCases - MonasteryExpenses
