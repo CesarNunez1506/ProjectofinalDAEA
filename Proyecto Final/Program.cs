@@ -219,7 +219,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "http://localhost:3000",  // Frontend Next.js desarrollo
                 "http://localhost:3001",  // Puerto alternativo
-                "https://st-frontend.vercel.app", // Frontend en producción (ajustar según deployment)
+                "https://front-daea.vercel.app", // Frontend en Vercel
                 "https://*.vercel.app"    // Cualquier subdominio de Vercel
               )
               .AllowAnyHeader()
