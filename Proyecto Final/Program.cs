@@ -273,6 +273,55 @@ builder.Services.AddScoped<Application.UseCases.Modules.Commands.CreateModuleCom
 builder.Services.AddScoped<Application.UseCases.Modules.Commands.UpdateModuleCommand>();
 builder.Services.AddScoped<Application.UseCases.Modules.Commands.DeleteModuleCommand>();
 
+// ========== MÓDULO DE VENTAS - TIENDAS ==========
+builder.Services.AddScoped<Application.UseCases.Sales.Stores.Commands.CreateStoreCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Stores.Commands.UpdateStoreCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Stores.Commands.DeleteStoreCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Stores.Queries.GetAllStoresQuery>();
+builder.Services.AddScoped<Application.UseCases.Sales.Stores.Queries.GetStoreByIdQuery>();
+
+// ========== MÓDULO DE VENTAS - CANALES DE VENTA ==========
+builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Commands.CreateSalesChannelCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Commands.UpdateSalesChannelCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Commands.DeleteSalesChannelCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Queries.GetAllSalesChannelsQuery>();
+builder.Services.AddScoped<Application.UseCases.Sales.SalesChannels.Queries.GetSalesChannelByIdQuery>();
+
+// ========== MÓDULO DE VENTAS - INVENTARIO POR TIENDA ==========
+builder.Services.AddScoped<Application.UseCases.Sales.WarehouseStores.Commands.CreateWarehouseStoreCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.WarehouseStores.Commands.UpdateWarehouseStoreCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.WarehouseStores.Commands.DeleteWarehouseStoreCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.WarehouseStores.Queries.GetAllWarehouseStoresQuery>();
+builder.Services.AddScoped<Application.UseCases.Sales.WarehouseStores.Queries.GetWarehouseStoreByIdQuery>();
+
+// ========== MÓDULO DE VENTAS - SESIONES DE CAJA ==========
+builder.Services.AddScoped<Application.UseCases.Sales.CashSessions.Commands.CreateCashSessionCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.CashSessions.Commands.UpdateCashSessionCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.CashSessions.Commands.DeleteCashSessionCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.CashSessions.Queries.GetAllCashSessionsQuery>();
+builder.Services.AddScoped<Application.UseCases.Sales.CashSessions.Queries.GetCashSessionByIdQuery>();
+
+// ========== MÓDULO DE VENTAS - VENTAS ==========
+builder.Services.AddScoped<Application.UseCases.Sales.Sales.Commands.CreateSaleCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Sales.Commands.UpdateSaleCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Sales.Commands.DeleteSaleCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Sales.Queries.GetAllSalesQuery>();
+builder.Services.AddScoped<Application.UseCases.Sales.Sales.Queries.GetSaleByIdQuery>();
+
+// ========== MÓDULO DE VENTAS - DETALLES DE VENTA ==========
+builder.Services.AddScoped<Application.UseCases.Sales.SaleDetails.Commands.CreateSaleDetailCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.SaleDetails.Commands.UpdateSaleDetailCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.SaleDetails.Commands.DeleteSaleDetailCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.SaleDetails.Queries.GetAllSaleDetailsQuery>();
+builder.Services.AddScoped<Application.UseCases.Sales.SaleDetails.Queries.GetSaleDetailByIdQuery>();
+
+// ========== MÓDULO DE VENTAS - DEVOLUCIONES ==========
+builder.Services.AddScoped<Application.UseCases.Sales.Returns.Commands.CreateReturnCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Returns.Commands.UpdateReturnCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Returns.Commands.DeleteReturnCommand>();
+builder.Services.AddScoped<Application.UseCases.Sales.Returns.Queries.GetAllReturnsQuery>();
+builder.Services.AddScoped<Application.UseCases.Sales.Returns.Queries.GetReturnByIdQuery>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
