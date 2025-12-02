@@ -273,6 +273,35 @@ builder.Services.AddScoped<Application.UseCases.Modules.Commands.CreateModuleCom
 builder.Services.AddScoped<Application.UseCases.Modules.Commands.UpdateModuleCommand>();
 builder.Services.AddScoped<Application.UseCases.Modules.Commands.DeleteModuleCommand>();
 
+// ========== CASOS DE USO - MUSEO  ==========
+// Entrances
+builder.Services.AddScoped<Application.UseCases.Museum.Entrances.Commands.CreateEntranceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.Entrances.Commands.UpdateEntranceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.Entrances.Commands.DeleteEntranceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.Entrances.Queries.GetAllEntrancesUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.Entrances.Queries.GetEntranceByIdUseCase>();
+
+// TypePersons
+builder.Services.AddScoped<Application.UseCases.Museum.TypePersons.Commands.CreateTypePersonUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.TypePersons.Commands.UpdateTypePersonUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.TypePersons.Commands.DeleteTypePersonUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.TypePersons.Queries.GetAllTypePersonsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.TypePersons.Queries.GetTypePersonByIdUseCase>();
+
+// SalesChannels
+builder.Services.AddScoped<Application.UseCases.Museum.SalesChannels.Commands.CreateSalesChannelUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.SalesChannels.Commands.UpdateSalesChannelUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.SalesChannels.Commands.DeleteSalesChannelUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.SalesChannels.Queries.GetAllSalesChannelsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.SalesChannels.Queries.GetSalesChannelByIdUseCase>();
+
+// PaymentMethods
+builder.Services.AddScoped<Application.UseCases.Museum.PaymentMethods.Commands.CreatePaymentMethodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.PaymentMethods.Commands.UpdatePaymentMethodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.PaymentMethods.Commands.DeletePaymentMethodUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.PaymentMethods.Queries.GetAllPaymentMethodsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Museum.PaymentMethods.Queries.GetPaymentMethodByIdUseCase>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
