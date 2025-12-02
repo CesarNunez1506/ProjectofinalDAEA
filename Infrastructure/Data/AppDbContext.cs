@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Data.Configurations;
 
 namespace Infrastructure.Data;
 
@@ -15,6 +16,7 @@ public partial class AppDbContext : DbContext
         : base(options)
     {
     }
+    public virtual DbSet<Museo> Museos { get; set; }
 
     public virtual DbSet<BuysProduct> BuysProducts { get; set; }
 
@@ -1344,8 +1346,14 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("warehouse_stores_storeId_fkey");
         });
 
+
+        modelBuilder.ApplyConfiguration(new MuseoConfiguration());
+
         OnModelCreatingPartial(modelBuilder);
+        
     }
+
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Data.Configurations;
 
 namespace Infrastructure.Data;
 
@@ -1344,6 +1345,9 @@ public partial class LocalDbContext : DbContext
                 .HasConstraintName("warehouse_stores_storeId_fkey");
         });
 
+        
+        modelBuilder.ApplyConfiguration(new MuseoConfiguration());
+  
         OnModelCreatingPartial(modelBuilder);
     }
 
