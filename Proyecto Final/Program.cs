@@ -419,32 +419,32 @@ builder.Services.AddScoped<Application.UseCases.Sales.WarehouseStores.Queries.Ge
 
 // ========== CASOS DE USO - RENTALS ==========
 // Customers
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.Commands.CreateCustomerUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.Commands.UpdateCustomerUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.Commands.DeleteCustomerUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.Queries.GetAllCustomersUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Customers.Queries.GetCustomerByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.CreateCustomerUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.UpdateCustomerUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.DeleteCustomerUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.GetAllCustomersUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Customers.GetCustomerByIdUseCase>();
 
 // Locations
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.Commands.CreateLocationUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.Commands.UpdateLocationUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.Commands.DeleteLocationUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.Queries.GetAllLocationsUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Locations.Queries.GetLocationByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.CreateLocationUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.UpdateLocationUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.DeleteLocationUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetAllLocationsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Locations.GetLocationByIdUseCase>();
 
 // Places
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.Commands.CreatePlaceUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.Commands.UpdatePlaceUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.Commands.DeletePlaceUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.Queries.GetAllPlacesUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Places.Queries.GetPlaceByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.CreatePlaceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.UpdatePlaceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.DeletePlaceUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.GetAllPlacesUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.Places.GetPlaceByIdUseCase>();
 
 // Rentals
-builder.Services.AddScoped<Application.UseCases.Rentals.Commands.CreateRentalUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Commands.UpdateRentalUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Commands.ToggleRentalStatusUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Queries.GetAllRentalsUseCase>();
-builder.Services.AddScoped<Application.UseCases.Rentals.Queries.GetRentalByIdUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.CreateRentalUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.UpdateRentalUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.ToggleRentalStatusUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.GetAllRentalsUseCase>();
+builder.Services.AddScoped<Application.UseCases.Rentals.GetRentalByIdUseCase>();
 
 var app = builder.Build();
 
