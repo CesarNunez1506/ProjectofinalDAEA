@@ -119,11 +119,8 @@ public class GenericRepository<T> : IRepository<T> where T : class
 
 public class GeneralIncomeGenericRepository : GenericRepository<GeneralIncome>, IGeneralIncomeGenericRepository
 {
-    private readonly AppDbContext _context;
-
     public GeneralIncomeGenericRepository(AppDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<IEnumerable<GeneralIncome>> GetIncomesByPeriodAsync(DateTime startDate, DateTime endDate)
@@ -170,11 +167,8 @@ public class GeneralIncomeGenericRepository : GenericRepository<GeneralIncome>, 
 
 public class GeneralExpenseGenericRepository : GenericRepository<GeneralExpense>, IGeneralExpenseGenericRepository
 {
-    private readonly AppDbContext _context;
-
     public GeneralExpenseGenericRepository(AppDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<IEnumerable<GeneralExpense>> GetExpensesByPeriodAsync(DateTime startDate, DateTime endDate)
@@ -221,11 +215,8 @@ public class GeneralExpenseGenericRepository : GenericRepository<GeneralExpense>
 
 public class MonasteryExpenseGenericRepository : GenericRepository<MonasteryExpense>, IMonasteryExpenseGenericRepository
 {
-    private readonly AppDbContext _context;
-
     public MonasteryExpenseGenericRepository(AppDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<IEnumerable<MonasteryExpense>> GetExpensesByPeriodAsync(DateTime startDate, DateTime endDate)
